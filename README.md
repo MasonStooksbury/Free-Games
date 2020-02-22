@@ -14,16 +14,16 @@ The Python script needs a few things to run:
   # Setting up Windows Task Scheduler
   These steps should help you get Windows Task Scheduler setup in such a way that it will wake your computer from sleep and grab your free games then go back to sleep. It will also be setup to run again if something goes wrong as well as kill itself if it goes haywire. I realize the first picture shows it being setup for Vista and Windows Server 2008, but this was the only way it would work on Windows 10 without doing some wonky BIOS setup that only worked for some people.
   - Fill out General:
-    - ![General](https://github.com/MasonStooksbury/Free-Games/blob/master/General.png)
+    - ![General](https://github.com/MasonStooksbury/Free-Games/blob/master/WTS_Setup/General.png)
   
   - Fill out Triggers:
-    - ![Triggers](https://github.com/MasonStooksbury/Free-Games/blob/master/Triggers.png)
+    - ![Triggers](https://github.com/MasonStooksbury/Free-Games/blob/master/WTS_Setup/Triggers.png)
   
   - Fill out Actions:
-    - ![Actions](https://github.com/MasonStooksbury/Free-Games/blob/master/Actions.png)
+    - ![Actions](https://github.com/MasonStooksbury/Free-Games/blob/master/WTS_Setup/Actions.png)
   
   - Fill out Conditions:
-    - ![Conditions](https://github.com/MasonStooksbury/Free-Games/blob/master/Conditions.png)
+    - ![Conditions](https://github.com/MasonStooksbury/Free-Games/blob/master/WTS_Setup/Conditions.png)
   
   - Fill out Settings:
-    - ![Settings](https://github.com/MasonStooksbury/Free-Games/blob/master/Settings.png)
+    - ![Settings](https://github.com/MasonStooksbury/Free-Games/blob/master/WTS_Setup/Settings.png)
