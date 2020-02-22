@@ -1,5 +1,6 @@
 # Free_Games.py Description
-Literally just a script that is automatically ran via Windows Task Scheduler or Cron that logs into Epic Store Games' website and grabs the two free games for the week. I've tested it on Windows, but there isn't any reason it wouldn't work on Linux as well. Just change the top line from "#! python3" to "#!/usr/bin/python3" and it should be fine.
+Literally just a script that is automatically ran via Windows Task Scheduler or Cron that logs into Epic Store Games' website and grabs the two free games for the week. I've tested it on Windows, but there isn't any reason it wouldn't work on Linux as well. Just change the top line from "#! python3" to "#!/usr/bin/python3" and it should be fine. Hope you enjoy!
+  - Mason Stooksbury <><
 
 
 # Setup
@@ -12,7 +13,7 @@ The Python script needs a few things to run:
   # Setting up Windows Task Scheduler
   These steps should help you get Windows Task Scheduler setup in such a way that it will wake your computer from sleep and grab your free games then go back to sleep. It will also be setup to run again if something goes wrong as well as kill itself if it goes haywire. I realize the first picture shows it being setup for Vista and Windows Server 2008, but this was the only way it would work on Windows 10 without doing some wonky BIOS setup that only worked for some people.
   - Fill out General:
-     -![General](https://github.com/MasonStooksbury/Free-Games/blob/master/General.png)
+    - ![General](https://github.com/MasonStooksbury/Free-Games/blob/master/General.png)
   
   - Fill out Triggers:
     - ![Triggers](https://github.com/MasonStooksbury/Free-Games/blob/master/Triggers.png)
