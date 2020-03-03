@@ -14,6 +14,7 @@ The Python script needs a few things to run:
   - GeckoDriver (selenium needs this) Linux people can use this script to do everything for you after installing "jq" which is a JSON processor: https://gist.github.com/cgoldberg/4097efbfeb40adf698a7d05e75e0ff51.  Windows people will need to download it here: https://github.com/mozilla/geckodriver/releases.  You will need to add the location of GeckoDriver to your PATH so that Windows and Python know where to look for it.
   - Firefox (the browser) You can technically do all of this with Chrome, but it involves some more setup with selenium and particular drivers and I'm just too lazy. This works perfectly fine.
   - Replace the "usernameOrEmail" and "password" variables in the code to match your Epic Games Store account. Be sure to leave the single quotes where they are.
+  - Finally, you'll also want to jump in and replace the user-agent. There are instructions inside the script on how to do this.
   
   
   # Setting up Windows Task Scheduler
