@@ -1,5 +1,9 @@
 # Free_Games.py Description
-Literally just a script that is automatically ran via Windows Task Scheduler or Cron that logs into the Epic Games Store website and grabs the two free games for the week. I've tested it on Windows, but there isn't any reason it wouldn't work on Linux as well. Just change the top line from "#! python3" to "#!/usr/bin/python3" and it should be fine. Hope you enjoy!
+Literally just a script that is automatically ran via Windows Task Scheduler or Cron that logs into the Epic Games Store website and grabs the two free games for the week. I've tested it on Windows, but there isn't any reason it wouldn't work on Linux as well. Just change the top line from "#! python3" to "#!/usr/bin/python3" and it should be fine. 
+
+Quick shout out to Andriesmenze for fixing this to work in the EU due to certain pop-ups that I wasn't seeing. Their work is very appreciated!
+
+Hope you enjoy!
   - Mason Stooksbury <><
 
 
