@@ -10,7 +10,7 @@ Hope you enjoy!
 
 
 # Updates! (03/21/2020)
-  - [1] The script can now handle more than two games! With the code I've got now, it should handle any amount of free games that show up. I'll get the first real test this coming Thursday, and if it fails, I'll fix it!
+  - [1] The script can now handle more than two games! With the code I've got now, it should handle any amount of free games that show up. I tested this on 3/26/20 and it worked for 3 games!
   - [2] The script has been totally overhauled to work with BeautifulSoup. I had forgotten how amazing it was since first starting Python and a buddy turned me back on to it. This reworking will hopefully make the script far more robust to changes.
 
 
