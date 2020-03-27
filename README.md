@@ -3,7 +3,7 @@ Literally just a script that is automatically ran via Windows Task Scheduler or 
 
 Quick shout-out to Andriesmenze for fixing this to work in the EU due to certain pop-ups that I wasn't seeing. Their work is very appreciated!
 
-Another shout-out to ergoithz and their amazing function that finds the xpath for a given BeautifulSoup object. These updates wouldn't be possible without it! Check out thier super-helpful function here: https://gist.github.com/ergoithz/6cf043e3fdedd1b94fcf
+Another shout-out to ergoithz and their amazing function that finds the xpath for a given BeautifulSoup object. These updates wouldn't be possible without it! Check out their super-helpful function here: https://gist.github.com/ergoithz/6cf043e3fdedd1b94fcf
 
 Another *huge* shout-out to SonOfDiablo for creating and providing their awesome PowerShell script for installing geckodriver on Windows! Now you don't have to follow all the steps mentioned before. Just install the PowerShell script, and run it. This will: download and install the latest geckodriver for the correct architecture, install it, and add it to your path if it isn't already there: automagically! Find the script here: https://gist.github.com/SonOfDiablo/81f3d610295c69c777b512e4da90393d
 
