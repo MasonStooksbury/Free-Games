@@ -27,9 +27,17 @@ The Python script needs a few things to run:
   - BeautifulSoup (for better/more robust finding of objects and things) This can be installed by running "pip3 install beautifulsoup4". This addition will hopefully mean that it will break less often!
   - GeckoDriver (selenium needs this) Linux people can use this script to do everything for you after installing "jq" which is a JSON processor: https://gist.github.com/cgoldberg/4097efbfeb40adf698a7d05e75e0ff51.  Windows people can use this script provided by SonOfDiablo: https://gist.github.com/SonOfDiablo/81f3d610295c69c777b512e4da90393d.
   - Firefox (the browser) You can technically do all of this with Chrome, but it involves some more setup with selenium and particular drivers and I'm just too lazy. This works perfectly fine.
-  - Replace the "usernameOrEmail" and "password" variables in the code to match your Epic Games Store account. Be sure to leave the single quotes where they are.
+  - If you do not want to use command-line arguments then, replace the "usernameOrEmail" and "password" variables in the code to match your Epic Games Store account. Be sure to add single quotes (') before and after your username and password.
   - Finally, you'll also want to jump in and replace the user-agent. There are instructions inside the script on how to do this.
+  # Running script manually
+  Make sure that python is in your system PATH (if it is not you can try adding it [manually](https://docs.telerik.com/teststudio/features/test-runners/add-path-environment-variables) or reinstalling python)
   
+  Change directory to where the script is located with: `cd 'the script location'`
+  
+  To run the script with command-line arguments run:
+  `python Free_Games.py (Your email) (Your password)`
+  
+  If you added your login credentials in the script than you run: `python Freegames.py`
   
   # Setting up Windows Task Scheduler
   These steps should help you get Windows Task Scheduler setup in such a way that it will wake your computer from sleep and grab your free games then go back to sleep. It will also be setup to run again if something goes wrong as well as kill itself if it goes haywire. I realize the first picture shows it being setup for Vista and Windows Server 2008, but this was the only way it would work on Windows 10 without doing some wonky BIOS setup that only worked for some people.
