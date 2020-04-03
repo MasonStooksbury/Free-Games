@@ -12,11 +12,9 @@ import sys
 
 ##################### EDIT THESE ###############################
 # Sets email to first argument on this script and the password to the secound argument
+# Replace variables with your login credentials if you do not want to use command-line arguments
 usernameOrEmail = sys.argv[1] 
 password = sys.argv[2]
-# If you want to put you login credentials here, comment out the above two lines, uncomment the two lines below and insert your email and password.
-#usernameOrEmail = 'flumpdoople@gmail.com'
-#password = 's3cur3p@ssw0rd11!!'
 
 # You will want to replace the user-agent below for yours. Just Google 'what is my user agent' and copy that between the single quotes below
 user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36'
