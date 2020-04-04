@@ -47,8 +47,8 @@ The Python script needs a few things to run:
   - Fill out Triggers:
     - ![Triggers](https://github.com/MasonStooksbury/Free-Games/blob/master/WTS_Setup/Triggers.png)
   
-  - Fill out Actions:
-    - ![Actions](https://github.com/MasonStooksbury/Free-Games/blob/master/WTS_Setup/Actions.png)
+  - Fill out Actions (no arguments are needed if you put your login credentials in the script!):
+    - ![Actions](https://github.com/TheTrueCoder/Free-Games/blob/master/WTS_Setup/Actions.png)
   
   - Fill out Conditions:
     - ![Conditions](https://github.com/MasonStooksbury/Free-Games/blob/master/WTS_Setup/Conditions.png)
