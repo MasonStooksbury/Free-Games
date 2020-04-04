@@ -34,10 +34,9 @@ The Python script needs a few things to run:
   
   Change directory to where the script is located with: `cd 'the script location'`
   
-  To run the script with command-line arguments run:
-  `python Free_Games.py (Your email) (Your password)`
+  To run the script with command-line arguments run: `python Free_Games.py (Your email) (Your password)`
   
-  If you added your login credentials in the script than you run: `python Freegames.py`
+  If you added your login credentials in the script than you run: `python Free_Games.py`
   
   # Setting up Windows Task Scheduler
   These steps should help you get Windows Task Scheduler setup in such a way that it will wake your computer from sleep and grab your free games then go back to sleep. It will also be setup to run again if something goes wrong as well as kill itself if it goes haywire. I realize the first picture shows it being setup for Vista and Windows Server 2008, but this was the only way it would work on Windows 10 without doing some wonky BIOS setup that only worked for some people.
