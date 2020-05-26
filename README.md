@@ -11,6 +11,9 @@ Hope you enjoy!
   - Mason Stooksbury <><
 
 
+# Updates III! (05/26/2020)
+  - Thanks to Steve-Tech for adding some code to click the "Sign in with Epic Games" that apparently shows up now
+
 # Updates II! (03/26/2020)
   - [1] Worked for 3 games. Tested today.
   - [2] SonOfDiablo created and provided an amazing PowerShell script to download and install geckodriver for Windows users! Find it here: https://gist.github.com/SonOfDiablo/81f3d610295c69c777b512e4da90393d
