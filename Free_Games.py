@@ -129,7 +129,8 @@ browser.get(web_path + '/login')
 # Give the page enough time to load before we enter anything
 time.sleep(5)
 
-
+# Click 'Sign in with Epic Games'
+browser.find_element_by_id("login-with-epic").click()
 
 # Let's login and get that out of the way
 fill_out_user = browser.find_element_by_id('usernameOrEmail')
