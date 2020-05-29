@@ -156,11 +156,11 @@ html = BeautifulSoup(browser.page_source, 'lxml')
 
 # Check for, and close, the cookies banner
 try:
-    browser.find_element_by_xpath('''/html/body/div/div/div[4]/header/div/button/span''')
+    browser.find_element_by_xpath('''/html/body/div/div/div[4]/header/header/div/button/span''')
 except:
     print()
 else:
-    cookies = browser.find_element_by_xpath('''/html/body/div/div/div[4]/header/div/button/span''')
+    cookies = browser.find_element_by_xpath('''/html/body/div/div/div[4]/header/header/div/button/span''')
     cookies.click()
     time.sleep(2)
     
