@@ -11,14 +11,17 @@ Hope you enjoy!
   - Mason Stooksbury <><
 
 
-# Updates III! (05/26/2020)
+## Updates IV! (05/29/30)
+  - Thanks to Spifffff for modifying the Xpath for the cookies banner!
+
+## Updates III! (05/26/2020)
   - Thanks to Steve-Tech for adding some code to click the "Sign in with Epic Games" that apparently shows up now
 
-# Updates II! (03/26/2020)
+## Updates II! (03/26/2020)
   - [1] Worked for 3 games. Tested today.
   - [2] SonOfDiablo created and provided an amazing PowerShell script to download and install geckodriver for Windows users! Find it here: https://gist.github.com/SonOfDiablo/81f3d610295c69c777b512e4da90393d
 
-# Updates! (03/21/2020)
+## Updates! (03/21/2020)
   - [1] The script can now handle more than two games! With the code I've got now, it should handle any amount of free games that show up.
   - [2] The script has been totally overhauled to work with BeautifulSoup. I had forgotten how amazing it was since first starting Python and a buddy turned me back on to it. This reworking will hopefully make the script far more robust to changes.
 
