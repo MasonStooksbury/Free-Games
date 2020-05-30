@@ -4,6 +4,7 @@
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.common.exceptions import ElementClickInterceptedException
 
 import lxml.html
 import time
@@ -109,6 +110,18 @@ def getGame():
 
 
 
+# Clicks on the current target or, if the target is in the carousel, cycles through the carousel until target is clickable
+def click_target(current_target, cycle_button):
+    try:
+        current_target.click()
+    except ElementClickInterceptedException as ex:
+        if current_target.get_attribute('class') is not None and 'FeaturedCarouselDetails' in current_target.get_attribute('class'):
+            cycle_button.click()
+            time.sleep(2)
+            click_target(current_target, cycle_button)
+        else:
+            raise ex
+    
 
 
 
@@ -181,10 +194,12 @@ for span in spans:
                       'element': browser_element
                       })
 
+# Get the button to cycle through the featured carousel
+carousel_cycle_button = browser.find_element_by_xpath('''/html/body/div/div/div[4]/main/div/div/div/div/span[2]/div/div/div[2]/div[2]/div[1]/button[2]''')
 
 # Go thru each game we found and get it!
 for index, game in enumerate(games):
-    game['element'].click()
+    click_target(game['element'], carousel_cycle_button)
     getGame()
     # Go back to the store page to get the other game
     browser.get(web_path)
