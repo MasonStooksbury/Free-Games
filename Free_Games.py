@@ -11,7 +11,7 @@ import time
 
 ##################### EDIT THESE ###############################
 # Replace these with your info
-usernameOrEmail = 'flumpdoople@gmail.com'
+email = 'flumpdoople@gmail.com'
 password = 's3cur3p@ssw0rd11!!'
 
 # You will want to replace the user-agent below for yours. Just Google 'what is my user agent' and copy that between the single quotes below
@@ -133,8 +133,8 @@ time.sleep(5)
 browser.find_element_by_id("login-with-epic").click()
 
 # Let's login and get that out of the way
-fill_out_user = browser.find_element_by_id('usernameOrEmail')
-fill_out_user.send_keys(usernameOrEmail)
+fill_out_user = browser.find_element_by_id('email')
+fill_out_user.send_keys(email)
 
 fill_out_pass = browser.find_element_by_id('password')
 fill_out_pass.send_keys(password)
