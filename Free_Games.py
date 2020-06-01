@@ -4,7 +4,9 @@
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 import lxml.html
 import time
@@ -16,7 +18,6 @@ email = 'flumpdoople@gmail.com'
 password = 's3cur3p@ssw0rd11!!'
 
 # You will want to replace the user-agent below for yours. Just Google 'what is my user agent' and copy that between the single quotes below
-user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36'
 ##################### EDIT THESE ###############################
 
 
@@ -110,18 +111,16 @@ def getGame():
 
 
 
-# Clicks on the current target or, if the target is in the carousel, cycles through the carousel until target is clickable
-def click_target(current_target, cycle_button):
+# Check for, and close, the cookies banner
+def try_accept_cookies():
     try:
-        current_target.click()
-    except ElementClickInterceptedException as ex:
-        if current_target.get_attribute('class') is not None and 'FeaturedCarouselDetails' in current_target.get_attribute('class'):
-            cycle_button.click()
-            time.sleep(2)
-            click_target(current_target, cycle_button)
-        else:
-            raise ex
-    
+        browser.find_element_by_xpath('''/html/body/div/div/div[4]/header/header/div/button/span''')
+    except:
+        print()
+    else:
+        cookies = browser.find_element_by_xpath('''/html/body/div/div/div[4]/header/header/div/button/span''')
+        cookies.click()
+        time.sleep(2)
 
 
 
@@ -166,17 +165,7 @@ time.sleep(4)
 # Grab the source text, and make a beautiful soup object
 html = BeautifulSoup(browser.page_source, 'lxml')
 
-
-# Check for, and close, the cookies banner
-try:
-    browser.find_element_by_xpath('''/html/body/div/div/div[4]/header/header/div/button/span''')
-except:
-    print()
-else:
-    cookies = browser.find_element_by_xpath('''/html/body/div/div/div[4]/header/header/div/button/span''')
-    cookies.click()
-    time.sleep(2)
-    
+try_accept_cookies()
 
 # Get all the span tags to make sure we get every available game
 spans = html.find_all('span')
@@ -194,12 +183,21 @@ for span in spans:
                       'element': browser_element
                       })
 
-# Get the button to cycle through the featured carousel
-carousel_cycle_button = browser.find_element_by_xpath('''/html/body/div/div/div[4]/main/div/div/div/div/span[2]/div/div/div[2]/div[2]/div[1]/button[2]''')
 
 # Go thru each game we found and get it!
 for index, game in enumerate(games):
-    click_target(game['element'], carousel_cycle_button)
+    # Wait until the element is clickable, it's possible that the game is clickable from the start
+    try:
+        wait_until_clickable = WebDriverWait(browser, 60).until(
+            EC.element_to_be_clickable((By.XPATH, game['xpath']))
+        ).click()
+    # If the wait times out that means that either the game is not in the carousel or that the timeout was too short
+    except:
+        # Cookie bar can cause the game to not be clickable, attempt to close it again just to be sure.
+        # If any other events end up causing unclickables, deal with them here
+        try_accept_cookies()
+        game['element'].click()
+
     getGame()
     # Go back to the store page to get the other game
     browser.get(web_path)
