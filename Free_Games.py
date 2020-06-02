@@ -18,6 +18,7 @@ email = 'flumpdoople@gmail.com'
 password = 's3cur3p@ssw0rd11!!'
 
 # You will want to replace the user-agent below for yours. Just Google 'what is my user agent' and copy that between the single quotes below
+user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36'
 ##################### EDIT THESE ###############################
 
 
@@ -109,7 +110,23 @@ def getGame():
             # We only want the first one (usually the game), so leave
             break
 
-
+# Try clicking on a game
+def try_click_game(game):
+    next_button = try_get_carousel_button()
+    for _ in range(60):
+        try:
+            # Wait 1 second for the game to become clickable, throw an exception if it doesn't
+            WebDriverWait(browser, 1).until(
+                EC.element_to_be_clickable((By.XPATH, game['xpath']))
+            ).click()
+        except:
+            # Click the next button, cycling through the carousel if it can
+            if next_button is not None:
+                next_button.click()
+        else:
+            # Exit the loop once the game was clicked
+            return True
+    return False
 
 # Check for, and close, the cookies banner
 def try_accept_cookies():
@@ -122,7 +139,15 @@ def try_accept_cookies():
         cookies.click()
         time.sleep(2)
 
-
+# Get carousel next button
+def try_get_carousel_button():
+    next_button_tag = html.find("button", { 'aria-label' : 'Next item' })
+    if next_button_tag is not None:
+        next_xpath = xpath_soup(next_button_tag)
+        return browser.find_element_by_xpath(next_xpath)
+    else:
+        print('next button not found')
+        return None
 
 ##### MAIN #####
 
@@ -183,21 +208,19 @@ for span in spans:
                       'element': browser_element
                       })
 
-
 # Go thru each game we found and get it!
 for index, game in enumerate(games):
-    # Wait until the element is clickable, it's possible that the game is clickable from the start
-    try:
-        wait_until_clickable = WebDriverWait(browser, 60).until(
-            EC.element_to_be_clickable((By.XPATH, game['xpath']))
-        ).click()
-    # If the wait times out that means that either the game is not in the carousel or that the timeout was too short
-    except:
-        # Cookie bar can cause the game to not be clickable, attempt to close it again just to be sure.
-        # If any other events end up causing unclickables, deal with them here
+    # Try to click on the current game
+    if not try_click_game(game):
+        # Try to clear the cookies again to see if that helps
         try_accept_cookies()
-        game['element'].click()
-
+        try:
+            # Try to click on the game one last time
+            game['element'].click()
+        except:
+            # If it didn't work, skip to the next game
+            print("Skipped a game because I couldn't click on it")
+            continue
     getGame()
     # Go back to the store page to get the other game
     browser.get(web_path)
@@ -208,7 +231,6 @@ for index, game in enumerate(games):
         games[index + 1]['element'] = browser.find_element_by_xpath(games[index + 1]['xpath'])
     except:
         break
-        
     
 # Close everything
 browser.quit()
