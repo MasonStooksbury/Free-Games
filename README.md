@@ -8,14 +8,14 @@ Another *huge* shout-out to SonOfDiablo for creating and providing their awesome
 Finally, a warm thank you to:
   - Andriesmenze for fixing the script to work in the EU due to certain pop-ups that I wasn't seeing. Their work is very appreciated!
   - Steve-Tech for adding some code to click the "Sign in with Epic Games" that apparently shows up now.
-  - Spifffff for modifying the Xpath for the cookies banner, and for noticing that EGS requires email-only for logging in now
+  - Spifffff for modifying the Xpath for the cookies banner, for noticing that EGS requires email-only for logging in now, and for modifying the script to work with the games carousel that shows up sometimes
 
 Hope you enjoy!
   - Mason Stooksbury <><
 
 
-### Updates! (05/30/2020)
-  - Thanks to Spifffff for modifying the Xpath for the cookies banner, and for noticing that EGS requires email-only for logging in now!
+### Updates! (06/02/2020)
+  - Thanks to Spifffff for all of their hard work on the the games carousel. The script is now able to navigate thru the carousel if it shows up and grab the games from there!
 
 
 # Setup
