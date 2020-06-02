@@ -4,6 +4,9 @@
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 import lxml.html
 import time
@@ -107,10 +110,44 @@ def getGame():
             # We only want the first one (usually the game), so leave
             break
 
+# Try clicking on a game
+def try_click_game(game):
+    next_button = try_get_carousel_button()
+    for _ in range(60):
+        try:
+            # Wait 1 second for the game to become clickable, throw an exception if it doesn't
+            WebDriverWait(browser, 1).until(
+                EC.element_to_be_clickable((By.XPATH, game['xpath']))
+            ).click()
+        except:
+            # Click the next button, cycling through the carousel if it can
+            if next_button is not None:
+                next_button.click()
+        else:
+            # Exit the loop once the game was clicked
+            return True
+    return False
 
+# Check for, and close, the cookies banner
+def try_accept_cookies():
+    try:
+        browser.find_element_by_xpath('''/html/body/div/div/div[4]/header/header/div/button/span''')
+    except:
+        print()
+    else:
+        cookies = browser.find_element_by_xpath('''/html/body/div/div/div[4]/header/header/div/button/span''')
+        cookies.click()
+        time.sleep(2)
 
-
-
+# Get carousel next button
+def try_get_carousel_button():
+    next_button_tag = html.find("button", { 'aria-label' : 'Next item' })
+    if next_button_tag is not None:
+        next_xpath = xpath_soup(next_button_tag)
+        return browser.find_element_by_xpath(next_xpath)
+    else:
+        print('next button not found')
+        return None
 
 ##### MAIN #####
 
@@ -153,17 +190,7 @@ time.sleep(4)
 # Grab the source text, and make a beautiful soup object
 html = BeautifulSoup(browser.page_source, 'lxml')
 
-
-# Check for, and close, the cookies banner
-try:
-    browser.find_element_by_xpath('''/html/body/div/div/div[4]/header/header/div/button/span''')
-except:
-    print()
-else:
-    cookies = browser.find_element_by_xpath('''/html/body/div/div/div[4]/header/header/div/button/span''')
-    cookies.click()
-    time.sleep(2)
-    
+try_accept_cookies()
 
 # Get all the span tags to make sure we get every available game
 spans = html.find_all('span')
@@ -181,10 +208,19 @@ for span in spans:
                       'element': browser_element
                       })
 
-
 # Go thru each game we found and get it!
 for index, game in enumerate(games):
-    game['element'].click()
+    # Try to click on the current game
+    if not try_click_game(game):
+        # Try to clear the cookies again to see if that helps
+        try_accept_cookies()
+        try:
+            # Try to click on the game one last time
+            game['element'].click()
+        except:
+            # If it didn't work, skip to the next game
+            print("Skipped a game because I couldn't click on it")
+            continue
     getGame()
     # Go back to the store page to get the other game
     browser.get(web_path)
@@ -195,7 +231,6 @@ for index, game in enumerate(games):
         games[index + 1]['element'] = browser.find_element_by_xpath(games[index + 1]['xpath'])
     except:
         break
-        
     
 # Close everything
 browser.quit()
