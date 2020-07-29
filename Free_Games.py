@@ -14,11 +14,11 @@ import time
 
 ##################### EDIT THESE ###############################
 # Replace these with your info
-email = 'flumpdoople@gmail.com'
-password = 's3cur3p@ssw0rd11!!'
+email = ''
+password = ''
 
 # You will want to replace the user-agent below for yours. Just Google 'what is my user agent' and copy that between the single quotes below
-user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36'
+user_agent = ''
 ##################### EDIT THESE ###############################
 
 
@@ -72,7 +72,7 @@ def getGame():
 
     # Get all the button tags so we can see whether we need to grab the game or leave
     buttons = html.find_all('button')
-    
+
     for button in buttons:
         if button.get_text().upper() == 'OWNED':
             break
@@ -116,6 +116,8 @@ def try_click_game(game):
     for _ in range(60):
         try:
             # Wait 1 second for the game to become clickable, throw an exception if it doesn't
+            # If the script gets stuck cycling through the carousel, means that the object it wants to click on
+            # is unclickable for some other reason I haven't encountered before
             WebDriverWait(browser, 1).until(
                 EC.element_to_be_clickable((By.XPATH, game['xpath']))
             ).click()
@@ -130,14 +132,12 @@ def try_click_game(game):
 
 # Check for, and close, the cookies banner
 def try_accept_cookies():
-    try:
-        browser.find_element_by_xpath('''/html/body/div/div/div[4]/header/header/div/button/span''')
-    except:
-        print()
-    else:
-        cookies = browser.find_element_by_xpath('''/html/body/div/div/div[4]/header/header/div/button/span''')
-        cookies.click()
-        time.sleep(2)
+    # Searches soup for the button on the cookie banner
+    cookie_tag = html.find('button', { 'id' : 'onetrust-accept-btn-handler'})
+    if cookie_tag:
+        #print('cookie tag found')
+        cookie_xpath = xpath_soup(cookie_tag)
+        cookie_button = browser.find_element_by_xpath(cookie_xpath).click()
 
 # Get carousel next button
 def try_get_carousel_button():
@@ -168,6 +168,7 @@ time.sleep(5)
 
 # Click 'Sign in with Epic Games'
 browser.find_element_by_id("login-with-epic").click()
+time.sleep(5)
 
 # Let's login and get that out of the way
 fill_out_user = browser.find_element_by_id('email')
@@ -177,7 +178,8 @@ fill_out_pass = browser.find_element_by_id('password')
 fill_out_pass.send_keys(password)
 
 fill_out_pass.submit()
-time.sleep(8)
+# I increased this wait to manually solve captchas during testing
+time.sleep(45)
 
 
 
@@ -231,7 +233,7 @@ for index, game in enumerate(games):
         games[index + 1]['element'] = browser.find_element_by_xpath(games[index + 1]['xpath'])
     except:
         break
-    
+
 # Close everything
 browser.quit()
 
