@@ -14,8 +14,8 @@ Hope you enjoy!
   - Mason Stooksbury <><
 
 
-### Updates! (06/02/2020)
-  - Thanks to Spifffff for all of their hard work on the the games carousel. The script is now able to navigate thru the carousel if it shows up and grab the games from there!
+### Updates! (07/29/2020)
+  - Thanks to Spifffff again for helping out again by fixing wait times and the cookie banner. The script seems much more robust and bulletproof.
 
 
 # Setup
