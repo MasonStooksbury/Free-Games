@@ -67,9 +67,9 @@ def getGame():
                 time.sleep(1)
                 html = BeautifulSoup(browser.page_source, 'lxml')
                 break
-    except:
-        print()
 
+    except Exception:
+        pass
 
     # Get all the button tags so we can see whether we need to grab the game or leave
     buttons = html.find_all('button')
@@ -102,8 +102,8 @@ def getGame():
             # If the EULA prompt shows up, click it
             try:
                 browser.find_element_by_xpath('''//span[contains(text(),'I Agree')]''')
-            except:
-                print()
+            except Exception:
+                pass
             else:
                 EU_Refund_and_Right_of_Withdrawal_Information = browser.find_element_by_xpath('''//span[contains(text(),'I Agree')]''')
                 EU_Refund_and_Right_of_Withdrawal_Information.click()
