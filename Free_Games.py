@@ -15,9 +15,9 @@ import sys
 
 ##################### EDIT THESE ###############################
 # Replace these with your info
-email = ''
-password = ''
-two_fa_key = None # Leave as none if you are not using 2FA
+credentials = []
+credentials.append(["myemail@domain.com", "password", "5MBJBQUZRU9K1XULAIL8FKH0UPDX6LDESZEHOFMCIBCYSZ2UEYTQ"]) # Example for account with 2FA
+credentials.append(["myemail@domain.com", "password"]) # Example for account without 2FA
 
 # You will want to replace the user-agent below for yours. Just Google 'what is my user agent' and copy that between the single quotes below
 user_agent = ''
@@ -67,7 +67,6 @@ def getGame():
                 time.sleep(1)
                 html = BeautifulSoup(browser.page_source, 'lxml')
                 break
-
     except Exception:
         pass
         
@@ -234,6 +233,18 @@ def log_into_account(email, password, two_fa_key=None):
         time.sleep(1)
         wait_redirect_count += 1
     print("Successfully logged in " + email)
+    
+def log_out():    
+    browser.get(epic_logout_url)
+    wait_redirect_count = 0
+    has_warned_logout = False
+    while browser.current_url != epic_home_url:
+        if (wait_redirect_count >= 5) & (has_warned_logout == False):
+            print("Still waiting to be redirected to home page after logout")
+            has_warned_logout = True
+        time.sleep(1)
+        wait_redirect_count += 1
+    print("Successfully logged out\n")
 
 def get_free_games_list():
     if (browser.current_url != epic_store_url):
@@ -330,10 +341,15 @@ sys.excepthook = show_exception_and_exit
 
 epic_home_url = "https://www.epicgames.com/site/en-US/home"
 epic_store_url = "https://www.epicgames.com/store/en-US"
+epic_logout_url = "https://www.epicgames.com/site/logout"
 
 browser = start_firefox_browser(user_agent)
-log_into_account(email, password)
-claim_free_games()
-log_into_account(email, password, two_fa_key)
-accept_cookies()
+for account in credentials:
+    if len(account) == 3:
+        log_into_account(account[0], account[1], account[2])
+    else:
+        log_into_account(account[0], account[1])
+    accept_cookies()
+    claim_free_games()
+    log_out()
 browser.quit()
