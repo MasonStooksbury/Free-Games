@@ -17,6 +17,7 @@ import sys
 # Replace these with your info
 email = ''
 password = ''
+two_fa_key = None # Leave as none if you are not using 2FA
 
 # You will want to replace the user-agent below for yours. Just Google 'what is my user agent' and copy that between the single quotes below
 user_agent = ''
@@ -185,7 +186,10 @@ def start_firefox_browser(user_agent):
     browser.maximize_window()
     return browser
 
-def log_into_account(email, password):
+def log_into_account(email, password, two_fa_key=None):
+    import pyotp
+    from selenium.webdriver.common.keys import Keys
+
     # Loading login page and waiting until ready
     print("Logging into account " + email)
     browser.get(epic_store_url + "/login")
@@ -193,11 +197,21 @@ def log_into_account(email, password):
         raise TypeError("Unable to find login account type button")
     if not wait_until_element_located("//*[@id='email']"):
         raise TypeError("Unable to find email input field")
+
     # Logging in into the account
     browser.find_element_by_id('email').send_keys(email)
     browser.find_element_by_id('password').send_keys(password)
     if not wait_until_clickable_then_click("//*[@id='login']"):
         raise TypeError("Unable to find login button")
+    # 2FA
+    if (two_fa_key != None):
+        if not wait_until_clickable_then_click("//*[@id='code']"):
+            raise TypeError("Unable to find 2FA input field")
+        browser.find_element_by_id('code').send_keys(Keys.HOME) # Make sure to be at beginning of field
+        browser.find_element_by_id('code').send_keys(pyotp.TOTP(two_fa_key).now()) # 2FA login code
+        if not wait_until_clickable_then_click("//*[@id='continue']"):
+            raise TypeError("Unable to find 2FA continue button")
+
     # Waiting until redirected to home - captcha detection workaround
     wait_redirect_count = 0
     has_warned_captcha = False
@@ -295,4 +309,5 @@ epic_store_url = "https://www.epicgames.com/store/en-US"
 browser = start_firefox_browser(user_agent)
 log_into_account(email, password)
 claim_free_games()
+log_into_account(email, password, two_fa_key)
 browser.quit()

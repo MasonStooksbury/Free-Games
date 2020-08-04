@@ -23,6 +23,7 @@ The Python script needs a few things to run:
   - lxml (for parsing the HTML from the webpage) This can be installed by running "pip3 install lxml" in a command prompt/terminal
   - selenium (for roboting the website) This can be installed by running "pip3 install selenium" in a command prompt/terminal
   - BeautifulSoup (for better/more robust finding of objects and things) This can be installed by running "pip3 install beautifulsoup4". This addition will hopefully mean that it will break less often!
+  - pyotp (for Two-factor authentication) This can be installed by running "pip3 install pyotp" in a command prompt/terminal 
   - GeckoDriver (selenium needs this) Linux people can use this script to do everything for you after installing "jq" which is a JSON processor: https://gist.github.com/cgoldberg/4097efbfeb40adf698a7d05e75e0ff51.  Windows people can use this script provided by SonOfDiablo: https://gist.github.com/SonOfDiablo/81f3d610295c69c777b512e4da90393d.
   - Firefox (the browser) You can technically do all of this with Chrome, but it involves some more setup with selenium and particular drivers and I'm just too lazy. This works perfectly fine.
   - Replace the "email" and "password" variables in the code to match your Epic Games Store account. Be sure to leave the single quotes where they are.
