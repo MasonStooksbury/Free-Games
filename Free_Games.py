@@ -64,13 +64,12 @@ def getGame():
                 # Use the xpath to grab the browser element (so we can click it)
                 geez_dad_im_not_a_kid_anymore = browser.find_element_by_xpath(xpath)
                 geez_dad_im_not_a_kid_anymore.click()
+                time.sleep(1)
+                html = BeautifulSoup(browser.page_source, 'lxml')
                 break
-        time.sleep(7)
     except:
         print()
 
-    # Get the source again, just incase we came from clicking the potential "Continue" button
-    html = BeautifulSoup(browser.page_source, 'lxml')
 
     # Get all the button tags so we can see whether we need to grab the game or leave
     buttons = html.find_all('button')
