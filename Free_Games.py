@@ -155,14 +155,13 @@ def try_click_game(game):
     return False
 
 # Check for, and close, the cookies banner
-def try_accept_cookies():
-    # Searches soup for the button on the cookie banner
-    html = BeautifulSoup(browser.page_source, 'lxml') # Grab the source text, and make a beautiful soup object
-    cookie_tag = html.find('button', { 'id' : 'onetrust-accept-btn-handler'})
-    if cookie_tag:
-        #print('cookie tag found')
-        cookie_xpath = xpath_soup(cookie_tag)
-        cookie_button = browser.find_element_by_xpath(cookie_xpath).click()
+def accept_cookies():
+    print("Accepting cookies")
+    try:
+        wait_until_clickable_then_click("//*[@id='onetrust-accept-btn-handler']")
+        print("Successfully accepted cookies")
+    except:
+        print("Failed to accept cookies - Could be that they were already accepted previously")
 
 # Get carousel next button
 def try_get_carousel_button():
@@ -214,7 +213,7 @@ def get_free_games_list():
         time.sleep(4) # Give the page enough time to load before grabbing the source text
                       # If you get any weird errors related to 'root' or anything, start here and adjust the time
                       # Go back to the store page
-    try_accept_cookies()
+    accept_cookies()
     html = BeautifulSoup(browser.page_source, 'lxml') # Grab the source text, and make a beautiful soup object
     spans = html.find_all('span') # Get all the span tags to make sure we get every available game
 
@@ -237,7 +236,6 @@ def claim_free_games():
     
     for index, game in enumerate(games): # Go thru each game we found and get it!
         if not try_click_game(game): # Try to click on the current game
-            try_accept_cookies() # Try to clear the cookies again to see if that helps
             try:
                 game['element'].click() # Try to click on the game one last time
             except:
