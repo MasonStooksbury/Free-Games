@@ -186,20 +186,22 @@ def start_firefox_browser(user_agent):
     return browser
 
 def log_into_account(email, password):
-    browser.get(epic_store_url + '/login')
-    time.sleep(5) # Give the page enough time to load before we enter anything
-    browser.find_element_by_id("login-with-epic").click() # Click 'Sign in with Epic Games'
-    time.sleep(5)
-
-    # Let's login and get that out of the way
+    # Loading login page and waiting until ready
+    print("Logging into account " + email)
+    browser.get(epic_store_url + "/login")
+    if not wait_until_clickable_then_click("//*[@id='login-with-epic']"): # Click 'Sign in with Epic Games'
+        raise TypeError("Unable to find login account type button")
+    if not wait_until_element_located("//*[@id='email']"):
+        raise TypeError("Unable to find email input field")
+    # Logging in into the account
     browser.find_element_by_id('email').send_keys(email)
     browser.find_element_by_id('password').send_keys(password)
-    browser.find_element_by_id('password').submit()
-
+    if not wait_until_clickable_then_click("//*[@id='login']"):
+        raise TypeError("Unable to find login button")
     # Waiting until redirected to home - captcha detection workaround
     wait_redirect_count = 0
     has_warned_captcha = False
-    print("Waiting for website to redirect back to home page")
+    print("Waiting to be automatically redirected to home page")
     while browser.current_url != epic_home_url:
         if (wait_redirect_count >= 5) & (has_warned_captcha == False):
             print("Still waiting - Possible captcha requiring completion")
