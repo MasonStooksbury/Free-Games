@@ -205,8 +205,14 @@ def log_into_account(email, password, two_fa_key=None):
         raise TypeError("Unable to find login button")
     # 2FA
     if (two_fa_key != None):
-        if not wait_until_clickable_then_click("//*[@id='code']"):
-            raise TypeError("Unable to find 2FA input field")
+        wait_located_count = 0
+        has_warned_captcha = False
+        while not wait_until_element_located("//*[@id='code']"):
+            if (wait_located_count >= 3) & (has_warned_captcha == False):
+                print("Waiting - Cannot find 2FA input field - Possible captcha requiring completion")
+                has_warned_captcha = True
+            time.sleep(1)
+            wait_located_count += 1
         browser.find_element_by_id('code').send_keys(Keys.HOME) # Make sure to be at beginning of field
         browser.find_element_by_id('code').send_keys(pyotp.TOTP(two_fa_key).now()) # 2FA login code
         if not wait_until_clickable_then_click("//*[@id='continue']"):
