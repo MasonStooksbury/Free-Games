@@ -29,6 +29,15 @@ The Python script needs a few things to run:
   - Replace the "email" and "password" variables in the code to match your Epic Games Store account. Be sure to leave the single quotes where they are.
   - Finally, you'll also want to jump in and replace the user-agent. There are instructions inside the script on how to do this.
   
+# Two-factor authentication
+- If you already have 2FA enabled on your account, you will be required to disabled it temporarily. This is required to retrieve the key we need.
+1. Go to [your Epic account settings](https://www.epicgames.com/account/password) and enable "Authenticator App".
+1. Keep a copy of the "Manual Entry Key". This will be used later in the python script. Do not close the page yet.
+1. On phone, download [Google Authentificator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en) or any other similar application.
+1. Using the application, scan the QR code visible on browser. Enter the code obtained from the application on the browser and click "Activate".
+1. Keep a copy of the "Rescue Codes". This will come in handy to retrieve your account if you ever come to lose access to your Authentificator application (losing phone, etc...)
+1. In the python script, input the "Manual Entry Key" retrieved earlier in the corresponding field.
+1. Done.
   
   # Setting up Windows Task Scheduler
   These steps should help you get Windows Task Scheduler setup in such a way that it will wake your computer from sleep and grab your free games then go back to sleep. It will also be setup to run again if something goes wrong as well as kill itself if it goes haywire. I realize the first picture shows it being setup for Vista and Windows Server 2008, but this was the only way it would work on Windows 10 without doing some wonky BIOS setup that only worked for some people.
