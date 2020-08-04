@@ -251,6 +251,31 @@ def claim_free_games():
         except:
             break
 
+def wait_until_element_located(xstr, wait_duration=10):
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.common.exceptions import TimeoutException
+
+    try:
+        WebDriverWait(browser, wait_duration).until(EC.presence_of_element_located((By.XPATH, xstr)))
+        return True
+    except TimeoutException:
+        return False
+
+def wait_until_clickable_then_click(xstr, wait_duration=10):
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.common.exceptions import TimeoutException
+
+    try:
+        wait_until_element_located(xstr, wait_duration)
+        WebDriverWait(browser, wait_duration).until(EC.element_to_be_clickable((By.XPATH, xstr)))
+        browser.find_element_by_xpath(xstr).click()
+        return True
+    except TimeoutException:
+        return False
 
 ##### MAIN #####
 epic_home_url = "https://www.epicgames.com/site/en-US/home"
