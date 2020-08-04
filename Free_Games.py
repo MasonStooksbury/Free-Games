@@ -108,6 +108,30 @@ def getGame():
                 EU_Refund_and_Right_of_Withdrawal_Information.click()
                 time.sleep(2)
             # We only want the first one (usually the game), so leave
+
+            # Wait until redirected to "THANK YOU" page
+            wait_redirect_count = 0
+            has_warned_captcha = False
+            order_confirmed = False
+            print("Waiting for order confirmation")
+            while True:
+                try:
+                    if (wait_redirect_count >= 5) & (has_warned_captcha == False):
+                        print("Still waiting - Possible captcha requiring completion")
+                        has_warned_captcha = True
+                    html = BeautifulSoup(browser.page_source, 'lxml')
+                    spans = html.find_all('span')
+                    for span in spans:
+                        if span.get_text().upper() == 'THANK YOU FOR BUYING':
+                            order_confirmed = True
+                            break
+                except:
+                    time.sleep(1)
+                    wait_redirect_count += 1
+
+                if order_confirmed == True:
+                    break
+            print("Order confirmed")
             break
 
 # Try clicking on a game
@@ -152,7 +176,8 @@ def try_get_carousel_button():
 ##### MAIN #####
 
 # Main store page for Epic Games Store
-web_path = '''https://www.epicgames.com/store/en-US'''
+epic_home_url = "https://www.epicgames.com/site/en-US/home"
+epic_store_url = "https://www.epicgames.com/store/en-US"
 
 profile = webdriver.FirefoxProfile()
 
@@ -161,7 +186,7 @@ profile.set_preference("general.useragent.override", user_agent)
 
 # Setup the browser object to use our modified profile
 browser = webdriver.Firefox(profile)
-browser.get(web_path + '/login')
+browser.get(epic_store_url + '/login')
 
 # Give the page enough time to load before we enter anything
 time.sleep(5)
@@ -178,13 +203,21 @@ fill_out_pass = browser.find_element_by_id('password')
 fill_out_pass.send_keys(password)
 
 fill_out_pass.submit()
-# I increased this wait to manually solve captchas during testing
-time.sleep(45)
 
-
+# Waiting until redirected to home - captcha detection workaround
+wait_redirect_count = 0
+has_warned_captcha = False
+print("Waiting for website to redirect back to home page")
+while browser.current_url != epic_home_url:
+    if (wait_redirect_count >= 5) & (has_warned_captcha == False):
+        print("Still waiting - Possible captcha requiring completion")
+        has_warned_captcha = True
+    time.sleep(1)
+    wait_redirect_count += 1
+print("Successfully logged in " + email)
 
 # Go back to the store page
-browser.get(web_path)
+browser.get(epic_store_url)
 # Give the page enough time to load before grabbing the source text
 # If you get any weird errors related to 'root' or anything, start here and adjust the time
 time.sleep(4)
@@ -225,7 +258,7 @@ for index, game in enumerate(games):
             continue
     getGame()
     # Go back to the store page to get the other game
-    browser.get(web_path)
+    browser.get(epic_store_url)
     # Give the page enough time to load before grabbing the source text
     time.sleep(5)
     # Selenium complains this object no longer exists, so we need to re-get it so it doesn't explode
