@@ -236,7 +236,6 @@ def get_free_games_list():
         time.sleep(4) # Give the page enough time to load before grabbing the source text
                       # If you get any weird errors related to 'root' or anything, start here and adjust the time
                       # Go back to the store page
-    accept_cookies()
     html = BeautifulSoup(browser.page_source, 'lxml') # Grab the source text, and make a beautiful soup object
     spans = html.find_all('span') # Get all the span tags to make sure we get every available game
 
@@ -316,4 +315,5 @@ browser = start_firefox_browser(user_agent)
 log_into_account(email, password)
 claim_free_games()
 log_into_account(email, password, two_fa_key)
+accept_cookies()
 browser.quit()
