@@ -157,6 +157,7 @@ def try_click_game(game):
 # Check for, and close, the cookies banner
 def try_accept_cookies():
     # Searches soup for the button on the cookie banner
+    html = BeautifulSoup(browser.page_source, 'lxml') # Grab the source text, and make a beautiful soup object
     cookie_tag = html.find('button', { 'id' : 'onetrust-accept-btn-handler'})
     if cookie_tag:
         #print('cookie tag found')
@@ -165,6 +166,7 @@ def try_accept_cookies():
 
 # Get carousel next button
 def try_get_carousel_button():
+    html = BeautifulSoup(browser.page_source, 'lxml') # Grab the source text, and make a beautiful soup object
     next_button_tag = html.find("button", { 'aria-label' : 'Next item' })
     if next_button_tag is not None:
         next_xpath = xpath_soup(next_button_tag)
@@ -173,115 +175,88 @@ def try_get_carousel_button():
         print('next button not found')
         return None
 
-##### MAIN #####
+def start_firefox_browser(user_agent):
+    from selenium import webdriver
 
-# Main store page for Epic Games Store
+    profile = webdriver.FirefoxProfile()
+    profile.set_preference("general.useragent.override", user_agent) # We will use the user-agent to trick the website into thinking we are a real person. This usually subverts most basic security
+
+    browser = webdriver.Firefox(profile) # Setup the browser object to use our modified profile
+    browser.maximize_window()
+    return browser
+
+def log_into_account(email, password):
+    browser.get(epic_store_url + '/login')
+    time.sleep(5) # Give the page enough time to load before we enter anything
+    browser.find_element_by_id("login-with-epic").click() # Click 'Sign in with Epic Games'
+    time.sleep(5)
+
+    # Let's login and get that out of the way
+    browser.find_element_by_id('email').send_keys(email)
+    browser.find_element_by_id('password').send_keys(password)
+    browser.find_element_by_id('password').submit()
+
+    # Waiting until redirected to home - captcha detection workaround
+    wait_redirect_count = 0
+    has_warned_captcha = False
+    print("Waiting for website to redirect back to home page")
+    while browser.current_url != epic_home_url:
+        if (wait_redirect_count >= 5) & (has_warned_captcha == False):
+            print("Still waiting - Possible captcha requiring completion")
+            has_warned_captcha = True
+        time.sleep(1)
+        wait_redirect_count += 1
+    print("Successfully logged in " + email)
+
+def get_free_games_list():
+    if (browser.current_url != epic_store_url):
+        browser.get(epic_store_url)
+        time.sleep(4) # Give the page enough time to load before grabbing the source text
+                      # If you get any weird errors related to 'root' or anything, start here and adjust the time
+                      # Go back to the store page
+    try_accept_cookies()
+    html = BeautifulSoup(browser.page_source, 'lxml') # Grab the source text, and make a beautiful soup object
+    spans = html.find_all('span') # Get all the span tags to make sure we get every available game
+
+    # Create a list for all the game dictionaries
+    games = []
+    for span in spans:
+        if span.get_text().upper() == 'FREE NOW':
+            # Get the xpath
+            xpath = xpath_soup(span)
+            # Use the xpath to grab the browser element (so we can click it)
+            browser_element = browser.find_element_by_xpath(xpath)
+            # Create object and add it to the list
+            games.append({'xpath': xpath,
+                        'element': browser_element
+                        })
+    return games
+
+def claim_free_games():
+    games = get_free_games_list()
+    
+    for index, game in enumerate(games): # Go thru each game we found and get it!
+        if not try_click_game(game): # Try to click on the current game
+            try_accept_cookies() # Try to clear the cookies again to see if that helps
+            try:
+                game['element'].click() # Try to click on the game one last time
+            except:
+                print("Skipped a game because I couldn't click on it") # If it didn't work, skip to the next game
+                continue
+        getGame()
+        browser.get(epic_store_url) # Go back to the store page to get the other game
+        time.sleep(5) # Give the page enough time to load before grabbing the source text
+        try: # Selenium complains this object no longer exists, so we need to re-get it so it doesn't explode
+            games[index + 1]['element'] = browser.find_element_by_xpath(games[index + 1]['xpath'])
+        except:
+            break
+
+
+##### MAIN #####
 epic_home_url = "https://www.epicgames.com/site/en-US/home"
 epic_store_url = "https://www.epicgames.com/store/en-US"
 
-profile = webdriver.FirefoxProfile()
-
-# We will use the user-agent to trick the website into thinking we are a real person. This usually subverts most basic security
-profile.set_preference("general.useragent.override", user_agent)
-
-# Setup the browser object to use our modified profile
-browser = webdriver.Firefox(profile)
-browser.get(epic_store_url + '/login')
-
-# Give the page enough time to load before we enter anything
-time.sleep(5)
-
-# Click 'Sign in with Epic Games'
-browser.find_element_by_id("login-with-epic").click()
-time.sleep(5)
-
-# Let's login and get that out of the way
-fill_out_user = browser.find_element_by_id('email')
-fill_out_user.send_keys(email)
-
-fill_out_pass = browser.find_element_by_id('password')
-fill_out_pass.send_keys(password)
-
-fill_out_pass.submit()
-
-# Waiting until redirected to home - captcha detection workaround
-wait_redirect_count = 0
-has_warned_captcha = False
-print("Waiting for website to redirect back to home page")
-while browser.current_url != epic_home_url:
-    if (wait_redirect_count >= 5) & (has_warned_captcha == False):
-        print("Still waiting - Possible captcha requiring completion")
-        has_warned_captcha = True
-    time.sleep(1)
-    wait_redirect_count += 1
-print("Successfully logged in " + email)
-
-# Go back to the store page
-browser.get(epic_store_url)
-# Give the page enough time to load before grabbing the source text
-# If you get any weird errors related to 'root' or anything, start here and adjust the time
-time.sleep(4)
-
-# Grab the source text, and make a beautiful soup object
-html = BeautifulSoup(browser.page_source, 'lxml')
-
-try_accept_cookies()
-
-# Get all the span tags to make sure we get every available game
-spans = html.find_all('span')
-
-# Create a list for all the game dictionaries
-games = []
-for span in spans:
-    if span.get_text().upper() == 'FREE NOW':
-        # Get the xpath
-        xpath = xpath_soup(span)
-        # Use the xpath to grab the browser element (so we can click it)
-        browser_element = browser.find_element_by_xpath(xpath)
-        # Create object and add it to the list
-        games.append({'xpath': xpath,
-                      'element': browser_element
-                      })
-
-# Go thru each game we found and get it!
-for index, game in enumerate(games):
-    # Try to click on the current game
-    if not try_click_game(game):
-        # Try to clear the cookies again to see if that helps
-        try_accept_cookies()
-        try:
-            # Try to click on the game one last time
-            game['element'].click()
-        except:
-            # If it didn't work, skip to the next game
-            print("Skipped a game because I couldn't click on it")
-            continue
-    getGame()
-    # Go back to the store page to get the other game
-    browser.get(epic_store_url)
-    # Give the page enough time to load before grabbing the source text
-    time.sleep(5)
-    # Selenium complains this object no longer exists, so we need to re-get it so it doesn't explode
-    try:
-        games[index + 1]['element'] = browser.find_element_by_xpath(games[index + 1]['xpath'])
-    except:
-        break
-
-# Close everything
+browser = start_firefox_browser(user_agent)
+log_into_account(email, password)
+claim_free_games()
 browser.quit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
