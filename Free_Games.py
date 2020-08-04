@@ -232,25 +232,24 @@ def log_into_account(email, password, two_fa_key=None):
 def get_free_games_list():
     if (browser.current_url != epic_store_url):
         browser.get(epic_store_url)
-        time.sleep(4) # Give the page enough time to load before grabbing the source text
-                      # If you get any weird errors related to 'root' or anything, start here and adjust the time
-                      # Go back to the store page
+        wait_until_clickable("//*[@id='sitenav-link-0']") # Page should be loaded now
+        time.sleep(5) # Wait 5 more seconds to be safe
+        
     html = BeautifulSoup(browser.page_source, 'lxml') # Grab the source text, and make a beautiful soup object
     spans = html.find_all('span') # Get all the span tags to make sure we get every available game
 
-    # Create a list for all the game dictionaries
-    games = []
+    # Create a list for all the free game dictionaries
+    free_games = []
     for span in spans:
         if span.get_text().upper() == 'FREE NOW':
-            # Get the xpath
-            xpath = xpath_soup(span)
-            # Use the xpath to grab the browser element (so we can click it)
-            browser_element = browser.find_element_by_xpath(xpath)
-            # Create object and add it to the list
-            games.append({'xpath': xpath,
-                        'element': browser_element
-                        })
-    return games
+            xpath = xpath_soup(span) # Get the xpath
+            browser_element = browser.find_element_by_xpath(xpath) # Use the xpath to grab the browser element (so we can click it)
+            free_games.append({'xpath': xpath, 'element': browser_element}) # Create object and add it to the list
+            
+    if len(free_games) == 0:
+        raise TypeError("Free games list is empty")
+    
+    return free_games
 
 def claim_free_games():
     games = get_free_games_list()
@@ -294,6 +293,20 @@ def wait_until_clickable_then_click(xstr, wait_duration=10):
         WebDriverWait(browser, wait_duration).until(EC.element_to_be_clickable((By.XPATH, xstr)))
         time.sleep(0.5) # Small wait to avoid potential issues
         browser.find_element_by_xpath(xstr).click()
+        return True
+    except TimeoutException:
+        return False
+    
+def wait_until_clickable(xstr, wait_duration=10):
+    import time
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.common.exceptions import TimeoutException
+
+    try:
+        wait_until_element_located(xstr, wait_duration)
+        WebDriverWait(browser, wait_duration).until(EC.element_to_be_clickable((By.XPATH, xstr)))
         return True
     except TimeoutException:
         return False
