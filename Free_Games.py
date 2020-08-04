@@ -284,6 +284,7 @@ def wait_until_element_located(xstr, wait_duration=10):
         return False
 
 def wait_until_clickable_then_click(xstr, wait_duration=10):
+    import time
     from selenium.webdriver.common.by import By
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
@@ -292,6 +293,7 @@ def wait_until_clickable_then_click(xstr, wait_duration=10):
     try:
         wait_until_element_located(xstr, wait_duration)
         WebDriverWait(browser, wait_duration).until(EC.element_to_be_clickable((By.XPATH, xstr)))
+        time.sleep(0.5) # Small wait to avoid potential issues
         browser.find_element_by_xpath(xstr).click()
         return True
     except TimeoutException:
