@@ -10,6 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 import lxml.html
 import time
+import sys
 
 
 ##################### EDIT THESE ###############################
@@ -275,7 +276,17 @@ def wait_until_clickable_then_click(xstr, wait_duration=10):
     except TimeoutException:
         return False
 
+def show_exception_and_exit(exc_type, exc_value, tb):
+    import traceback
+    import sys
+    traceback.print_exception(exc_type, exc_value, tb)
+    input("Press key to exit.")
+    sys.exit(-1)
+    browser.quit()
+
 ##### MAIN #####
+sys.excepthook = show_exception_and_exit
+
 epic_home_url = "https://www.epicgames.com/site/en-US/home"
 epic_store_url = "https://www.epicgames.com/store/en-US"
 
