@@ -70,12 +70,19 @@ def getGame():
 
     except Exception:
         pass
+        
+    try:
+        game_title = browser.find_element_by_xpath('/html/body/div[1]/div/div[4]/main/div/nav[1]/div/nav/div/div[1]/ul/li[2]/a/h2/span').text
+    except:
+        game_title = browser.title
+    print("Claiming game " + game_title)    
 
     # Get all the button tags so we can see whether we need to grab the game or leave
     buttons = html.find_all('button')
 
     for button in buttons:
         if button.get_text().upper() == 'OWNED':
+            print("Already owned")
             break
         if button.get_text().upper() == 'GET':
             # Get the xpath of this button
