@@ -132,9 +132,10 @@ def getGame():
                         if span.get_text().upper() == 'THANK YOU FOR BUYING':
                             order_confirmed = True
                             break
-                except:
                     time.sleep(1)
                     wait_redirect_count += 1
+                except Exception:
+                    pass
 
                 if order_confirmed == True:
                     break
