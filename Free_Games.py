@@ -345,12 +345,13 @@ epic_store_url = "https://www.epicgames.com/store/en-US"
 epic_logout_url = "https://www.epicgames.com/site/logout"
 
 browser = start_firefox_browser(user_agent)
-for account in credentials:
+for index, account in enumerate(credentials):
     if len(account) == 3:
         log_into_account(account[0], account[1], account[2])
     else:
         log_into_account(account[0], account[1])
-    accept_cookies()
+    if index == 0:
+        accept_cookies()
     claim_free_games()
     log_out()
 browser.quit()
