@@ -287,7 +287,7 @@ def get_free_games_list():
 
 def claim_free_games():
     games = get_free_games_list()
-    
+    games_count = len(games)
     for index, game in enumerate(games): # Go thru each game we found and get it!
         if not try_click_game(game): # Try to click on the current game
             try:
@@ -296,8 +296,8 @@ def claim_free_games():
                 print("Skipped a game because I couldn't click on it") # If it didn't work, skip to the next game
                 continue
         getGame()
-        browser.get(epic_store_url) # Go back to the store page to get the other game
-        time.sleep(5) # Give the page enough time to load before grabbing the source text
+        if (index < games_count):
+            browser.get(epic_store_url) # Go back to the store page to get the other game
         try: # Selenium complains this object no longer exists, so we need to re-get it so it doesn't explode
             games[index + 1]['element'] = browser.find_element_by_xpath(games[index + 1]['xpath'])
         except:
