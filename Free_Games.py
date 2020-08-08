@@ -247,6 +247,7 @@ def log_into_account(email, password, two_fa_key=None):
         time.sleep(1)
         wait_redirect_count += 1
     print("Successfully logged in " + email)
+    browser.get(epic_store_url) # So it automatically waits until page is loaded
     
 def log_out():    
     import re 
