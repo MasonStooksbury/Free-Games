@@ -236,12 +236,14 @@ def log_into_account(email, password, two_fa_key=None):
     print("Successfully logged in " + email)
     
 def log_out():    
-    browser.get(epic_logout_url)
+    import re 
+    
+    browser.get(epic_logout_url + "?redirectUrl=" + uriencode(epic_store_url))
     wait_redirect_count = 0
     has_warned_logout = False
-    while browser.current_url != epic_home_url:
+    while not re.search(epic_store_url, browser.current_url):
         if (wait_redirect_count >= 5) & (has_warned_logout == False):
-            print("Still waiting to be redirected to home page after logout")
+            print("Still waiting to be redirected to store page after logout")
             has_warned_logout = True
         time.sleep(1)
         wait_redirect_count += 1
@@ -342,8 +344,8 @@ sys.excepthook = show_exception_and_exit
 
 epic_home_url = "https://www.epicgames.com/site/en-US/home"
 epic_store_url = "https://www.epicgames.com/store/en-US"
-epic_logout_url = "https://www.epicgames.com/site/logout"
 epic_login_url = "https://www.epicgames.com/id/login/epic"
+epic_logout_url = "https://www.epicgames.com/id/logout"
 
 browser = start_firefox_browser(user_agent)
 for index, account in enumerate(credentials):
