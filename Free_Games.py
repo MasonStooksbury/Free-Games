@@ -180,11 +180,10 @@ def try_click_game(game):
 # Check for, and close, the cookies banner
 def accept_cookies():
     print("Accepting cookies")
-    try:
-        wait_until_clickable_then_click("//*[@id='onetrust-accept-btn-handler']")
+    if wait_until_clickable_then_click("//*[@id='onetrust-accept-btn-handler']"):
         print("Successfully accepted cookies")
-    except:
-        print("Failed to accept cookies - Could be that they were already accepted previously")
+    else:
+        print("Failed to accept cookies")
 
 # Get carousel next button
 def try_get_carousel_button():
