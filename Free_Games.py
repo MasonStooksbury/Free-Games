@@ -64,8 +64,10 @@ def getGame():
         print("Game page loaded in language other than english, reloading as english")
         browser.get( re.sub(language, "en-US", browser.current_url) )
         
-    time.sleep(7)
-    # Re-get the source so that we can look for any "Continue" buttons
+    else:
+        browser.get(browser.current_url)
+           
+    # Get the source so that we can look for any "Continue" buttons
     html = BeautifulSoup(browser.page_source, 'lxml')
     try:
         spans = html.find_all('span')
@@ -266,8 +268,6 @@ def get_free_games_list():
     
     if not re.search(epic_store_url, browser.current_url):
         browser.get(epic_store_url)
-        wait_until_clickable("//*[@id='sitenav-link-0']") # Page should be loaded now
-        time.sleep(5) # Wait 5 more seconds to be safe
         
     html = BeautifulSoup(browser.page_source, 'lxml') # Grab the source text, and make a beautiful soup object
     spans = html.find_all('span') # Get all the span tags to make sure we get every available game
