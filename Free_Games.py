@@ -1,18 +1,5 @@
 #! python3
-
 # Free_Games.py - A script that Windows Task Scheduler can run to go and get me them sweet sweet free games I'll probably never play
-
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
-import lxml.html
-import time
-import sys
-from urllib.parse import quote as uriencode
-
 
 ##################### EDIT THESE ###############################
 # Replace these with your info
@@ -27,9 +14,20 @@ user_agent = ''
 
 
 
-
-
-
+from bs4 import BeautifulSoup
+import lxml.html
+import pyotp
+import re
+from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import sys
+import time
+import traceback
+from urllib.parse import quote as uriencode
 
 # Find the xpath of a given soup object.
 # Full credit goes to ergoithz over at:               https://gist.github.com/ergoithz
@@ -52,8 +50,6 @@ def xpath_soup(element):
 
 # Make a function to actually get the game that we can call later
 def getGame():
-    import re
-
     language = None
     while not isinstance(language, str):
         try: 
@@ -61,9 +57,8 @@ def getGame():
         except Exception:
             pass
     if language != "en-US":
-        print("Game page loaded in language other than english, reloading as english")
+        print("Product page loaded in language other than english, reloading as english")
         browser.get( re.sub(language, "en-US", browser.current_url) )
-        
     else:
         browser.get(browser.current_url)
            
@@ -161,8 +156,6 @@ def try_get_carousel_button():
         return None
 
 def start_firefox_browser(user_agent):
-    from selenium import webdriver
-
     profile = webdriver.FirefoxProfile()
     profile.set_preference("general.useragent.override", user_agent) # We will use the user-agent to trick the website into thinking we are a real person. This usually subverts most basic security
 
@@ -171,10 +164,6 @@ def start_firefox_browser(user_agent):
     return browser
 
 def log_into_account(email, password, two_fa_key=None):
-    import pyotp
-    import re
-    from selenium.webdriver.common.keys import Keys
-
     # Loading login page and waiting until ready
     print("Logging into account " + email)
     browser.get(epic_login_url + "?redirectUrl=" + uriencode(epic_store_url))
@@ -214,7 +203,6 @@ def log_into_account(email, password, two_fa_key=None):
     browser.get(epic_store_url) # So it automatically waits until page is loaded
     
 def log_out():    
-    import re 
     
     browser.get(epic_logout_url + "?redirectUrl=" + uriencode(epic_store_url))
     wait_redirect_count = 0
@@ -227,15 +215,12 @@ def log_out():
         wait_redirect_count += 1
     print("Successfully logged out\n")
 
-def get_free_games_list():
-    import re
-    
+def get_free_games_list():   
     if not re.search(epic_store_url, browser.current_url):
         browser.get(epic_store_url)
         
     html = BeautifulSoup(browser.page_source, 'lxml') # Grab the source text, and make a beautiful soup object
     spans = html.find_all('span') # Get all the span tags to make sure we get every available game
-
     # Create a list for all the free game dictionaries
     free_games = []
     for span in spans:
@@ -268,11 +253,6 @@ def claim_free_games():
             break
 
 def wait_until_element_located(xstr, wait_duration=10):
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-    from selenium.common.exceptions import TimeoutException
-
     try:
         WebDriverWait(browser, wait_duration).until(EC.presence_of_element_located((By.XPATH, xstr)))
         return True
@@ -280,12 +260,6 @@ def wait_until_element_located(xstr, wait_duration=10):
         return False
 
 def wait_until_clickable_then_click(xstr, wait_duration=10):
-    import time
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-    from selenium.common.exceptions import TimeoutException
-
     try:
         wait_until_element_located(xstr, wait_duration)
         WebDriverWait(browser, wait_duration).until(EC.element_to_be_clickable((By.XPATH, xstr)))
@@ -296,12 +270,6 @@ def wait_until_clickable_then_click(xstr, wait_duration=10):
         return False
     
 def wait_until_clickable(xstr, wait_duration=10):
-    import time
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-    from selenium.common.exceptions import TimeoutException
-
     try:
         wait_until_element_located(xstr, wait_duration)
         WebDriverWait(browser, wait_duration).until(EC.element_to_be_clickable((By.XPATH, xstr)))
@@ -310,8 +278,6 @@ def wait_until_clickable(xstr, wait_duration=10):
         return False
 
 def show_exception_and_exit(exc_type, exc_value, tb):
-    import traceback
-    import sys
     traceback.print_exception(exc_type, exc_value, tb)
     input("Press key to exit.")
     sys.exit(-1)
