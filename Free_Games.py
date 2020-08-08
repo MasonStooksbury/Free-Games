@@ -250,7 +250,9 @@ def log_out():
     print("Successfully logged out\n")
 
 def get_free_games_list():
-    if (browser.current_url != epic_store_url):
+    import re
+    
+    if not re.search(epic_store_url, browser.current_url):
         browser.get(epic_store_url)
         wait_until_clickable("//*[@id='sitenav-link-0']") # Page should be loaded now
         time.sleep(5) # Wait 5 more seconds to be safe
