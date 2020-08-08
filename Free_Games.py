@@ -11,6 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import lxml.html
 import time
 import sys
+from urllib.parse import quote as uriencode
 
 
 ##################### EDIT THESE ###############################
@@ -194,13 +195,12 @@ def start_firefox_browser(user_agent):
 
 def log_into_account(email, password, two_fa_key=None):
     import pyotp
+    import re
     from selenium.webdriver.common.keys import Keys
 
     # Loading login page and waiting until ready
     print("Logging into account " + email)
-    browser.get(epic_store_url + "/login")
-    if not wait_until_clickable_then_click("//*[@id='login-with-epic']"): # Click 'Sign in with Epic Games'
-        raise TypeError("Unable to find login account type button")
+    browser.get(epic_login_url + "?redirectUrl=" + uriencode(epic_store_url))
     if not wait_until_element_located("//*[@id='email']"):
         raise TypeError("Unable to find email input field")
 
@@ -223,11 +223,11 @@ def log_into_account(email, password, two_fa_key=None):
         if not wait_until_clickable_then_click("//*[@id='continue']"):
             raise TypeError("Unable to find 2FA continue button")
 
-    # Waiting until redirected to home - captcha detection workaround
+    # Waiting until redirected to store - captcha detection workaround
     wait_redirect_count = 0
     has_warned_captcha = False
-    print("Waiting to be automatically redirected to home page")
-    while browser.current_url != epic_home_url:
+    print("Waiting to be automatically redirected to store page")
+    while not re.search(epic_store_url, browser.current_url):
         if (wait_redirect_count >= 5) & (has_warned_captcha == False):
             print("Still waiting - Possible captcha requiring completion")
             has_warned_captcha = True
@@ -343,6 +343,7 @@ sys.excepthook = show_exception_and_exit
 epic_home_url = "https://www.epicgames.com/site/en-US/home"
 epic_store_url = "https://www.epicgames.com/store/en-US"
 epic_logout_url = "https://www.epicgames.com/site/logout"
+epic_login_url = "https://www.epicgames.com/id/login/epic"
 
 browser = start_firefox_browser(user_agent)
 for index, account in enumerate(credentials):
