@@ -52,6 +52,18 @@ def xpath_soup(element):
 
 # Make a function to actually get the game that we can call later
 def getGame():
+    import re
+
+    language = None
+    while not isinstance(language, str):
+        try: 
+            language = re.search(r"/store/(\D+?)/", browser.current_url).group(1)
+        except Exception:
+            pass
+    if language != "en-US":
+        print("Game page loaded in language other than english, reloading as english")
+        browser.get( re.sub(language, "en-US", browser.current_url) )
+        
     time.sleep(7)
     # Re-get the source so that we can look for any "Continue" buttons
     html = BeautifulSoup(browser.page_source, 'lxml')
