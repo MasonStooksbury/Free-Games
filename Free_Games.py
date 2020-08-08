@@ -91,71 +91,35 @@ def getGame():
         game_title = browser.title
     print("Claiming game " + game_title)    
 
-    # Get all the button tags so we can see whether we need to grab the game or leave
-    buttons = html.find_all('button')
-
-    for button in buttons:
-        if button.get_text().upper() == 'OWNED':
-            print("Already owned")
-            break
-        if button.get_text().upper() == 'GET':
-            # Get the xpath of this button
-            xpath = xpath_soup(button)
-            # Use the xpath to grab the browser element (so we can click it)
-            browser_element = browser.find_element_by_xpath(xpath)
-            browser_element.click()
-            time.sleep(4)
-
-            # Re-get the source (again)
-            html = BeautifulSoup(browser.page_source, 'lxml')
-            # Get all the spans so we can get the "Place Order" button
-            spans = html.find_all('span')
-
-            for span in spans:
-                if span.get_text().upper() == 'PLACE ORDER':
-                    # Get the xpath
-                    xpath = xpath_soup(span)
-                    # Use the xpath to grab the browser element (so we can click it)
-                    purchase_button_element = browser.find_element_by_xpath(xpath)
-                    # Create object and add it to the list
-                    purchase_button_element.click()
-                    break
-            # If the EULA prompt shows up, click it
-            try:
-                browser.find_element_by_xpath('''//span[contains(text(),'I Agree')]''')
-            except Exception:
-                pass
-            else:
-                EU_Refund_and_Right_of_Withdrawal_Information = browser.find_element_by_xpath('''//span[contains(text(),'I Agree')]''')
-                EU_Refund_and_Right_of_Withdrawal_Information.click()
-                time.sleep(2)
-            # We only want the first one (usually the game), so leave
-
-            # Wait until redirected to "THANK YOU" page
-            wait_redirect_count = 0
-            has_warned_captcha = False
-            order_confirmed = False
-            print("Waiting for order confirmation")
-            while True:
-                try:
-                    if (wait_redirect_count >= 5) & (has_warned_captcha == False):
-                        print("Still waiting - Possible captcha requiring completion")
-                        has_warned_captcha = True
-                    html = BeautifulSoup(browser.page_source, 'lxml')
-                    spans = html.find_all('span')
-                    for span in spans:
-                        if span.get_text().upper() == 'THANK YOU FOR BUYING':
-                            order_confirmed = True
-                            break
-                    time.sleep(1)
-                    wait_redirect_count += 1
-                except Exception:
-                    pass
-
-                if order_confirmed == True:
-                    break
-            print("Order confirmed")
-            break
+    if wait_until_element_located("//*[text() = 'Owned']", 1):
+        print("Already owned")
+        return
+    
+    wait_until_clickable_then_click("//*[text() = 'Get']")
+    wait_until_clickable_then_click("//*[text() = 'Place Order']")    
+    
+    # Wait until redirected to "THANK YOU" page
+    wait_redirect_count = 0
+    has_warned_captcha = False
+    print("Waiting for order confirmation")
+    while True:
+        try:
+            if wait_until_element_located("//*[text() = 'I Agree']", 0.1): # EULA prompt
+                time.sleep(1)
+                wait_until_clickable_then_click("//*[text() = 'I Agree']")
+                print("EULA accepted")
+            if (wait_redirect_count >= 5) & (has_warned_captcha == False):
+                print("Still waiting - Possible captcha requiring completion")
+                has_warned_captcha = True
+                
+            if wait_until_element_located("//*[contains(text(), 'Thank you for buying')]"):
+                break
+            
+            time.sleep(1)
+            wait_redirect_count += 1
+        except Exception:
+            pass
+    print("Order confirmed")
 
 # Try clicking on a game
 def try_click_game(game):
