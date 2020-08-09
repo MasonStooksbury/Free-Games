@@ -61,30 +61,11 @@ def getGame():
         browser.get( re.sub(language, "en-US", browser.current_url) )
     else:
         browser.get(browser.current_url)
-           
-    # Get the source so that we can look for any "Continue" buttons
-    html = BeautifulSoup(browser.page_source, 'lxml')
-    try:
-        spans = html.find_all('span')
-        # Check for a "Continue" button for the 18+ games. If we find it, click it
-        for span in spans:
-            if span.get_text().upper() == 'CONTINUE':
-                # Get the xpath
-                xpath = xpath_soup(span)
-                # Use the xpath to grab the browser element (so we can click it)
-                geez_dad_im_not_a_kid_anymore = browser.find_element_by_xpath(xpath)
-                geez_dad_im_not_a_kid_anymore.click()
-                time.sleep(1)
-                html = BeautifulSoup(browser.page_source, 'lxml')
-                break
-    except Exception:
-        pass
-        
-    try:
-        game_title = browser.find_element_by_xpath('/html/body/div[1]/div/div[4]/main/div/nav[1]/div/nav/div/div[1]/ul/li[2]/a/h2/span').text
-    except:
-        game_title = browser.title
+               
+    game_title = browser.title
     print("Claiming game " + game_title)    
+    
+    wait_until_clickable_then_click("//*[text() = 'Continue']", 1) # Continue +18 button
 
     if wait_until_element_located("//*[text() = 'Owned']", 1):
         print("Already owned")
