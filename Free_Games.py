@@ -235,26 +235,26 @@ def claim_free_games():
 
 def wait_until_element_located(xstr, wait_duration=10):
     try:
-        WebDriverWait(browser, wait_duration).until(EC.presence_of_element_located((By.XPATH, xstr)))
-        return True
+        element = WebDriverWait(browser, wait_duration).until(EC.presence_of_element_located((By.XPATH, xstr)))
+        return element
     except TimeoutException:
         return False
 
 def wait_until_clickable_then_click(xstr, wait_duration=10):
     try:
         wait_until_element_located(xstr, wait_duration)
-        WebDriverWait(browser, wait_duration).until(EC.element_to_be_clickable((By.XPATH, xstr)))
+        element = WebDriverWait(browser, wait_duration).until(EC.element_to_be_clickable((By.XPATH, xstr)))
         time.sleep(0.5) # Small wait to avoid potential issues
         browser.find_element_by_xpath(xstr).click()
-        return True
+        return element
     except TimeoutException:
         return False
     
 def wait_until_clickable(xstr, wait_duration=10):
     try:
         wait_until_element_located(xstr, wait_duration)
-        WebDriverWait(browser, wait_duration).until(EC.element_to_be_clickable((By.XPATH, xstr)))
-        return True
+        element = WebDriverWait(browser, wait_duration).until(EC.element_to_be_clickable((By.XPATH, xstr)))
+        return element
     except TimeoutException:
         return False
 
