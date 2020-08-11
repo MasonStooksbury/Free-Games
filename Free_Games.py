@@ -69,7 +69,7 @@ def getGame():
     
     wait_until_xpath_clickable_then_click("//*[text() = 'Continue']", 1) # Continue +18 button
 
-    if wait_until_xpath_presence_located("//*[text() = 'Owned']", 1):
+    if wait_until_xpath_visible("//*[text() = 'Owned']", 1):
         print("Already owned")
         return
     
@@ -84,7 +84,7 @@ def getGame():
     print("Waiting for order confirmation")
     while True:
         try:
-            if wait_until_xpath_presence_located("//*[text() = 'I Agree']", 0.1): # EULA prompt
+            if wait_until_xpath_visible("//*[text() = 'I Agree']", 1): # EULA prompt
                 time.sleep(1)
                 wait_until_xpath_clickable_then_click("//*[text() = 'I Agree']")
                 print("EULA accepted")
@@ -92,7 +92,7 @@ def getGame():
                 print("Still waiting - Possible captcha requiring completion")
                 has_warned_captcha = True
                 
-            if wait_until_xpath_presence_located("//*[contains(text(), 'Thank you for buying')]"):
+            if wait_until_xpath_visible("//*[contains(text(), 'Thank you for buying')]"):
                 break
             
             time.sleep(1)
@@ -136,7 +136,7 @@ def accept_cookies():
 
 # Get carousel next button
 def try_get_carousel_button():
-    next_button_tag = wait_until_xpath_presence_located("//*[@aria-label='Next item']")
+    next_button_tag = wait_until_xpath_visible("//*[@aria-label='Next item']")
     if next_button_tag:
         return next_button_tag
     else:
