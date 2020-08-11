@@ -285,6 +285,7 @@ def show_exception_and_exit(exc_type, exc_value, tb):
 
 ##### MAIN #####
 sys.excepthook = show_exception_and_exit
+game_claim_errors_count = 0
 
 epic_home_url = "https://www.epicgames.com/site/en-US/home"
 epic_store_url = "https://www.epicgames.com/store/en-US"
@@ -302,3 +303,6 @@ for index, account in enumerate(credentials):
     claim_free_games()
     log_out()
 browser.quit()
+if game_claim_errors_count > 0:
+    print("/!\\ Some games failed to be claimed /!\\")
+    input("Press any key to exit.")
