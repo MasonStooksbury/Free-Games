@@ -101,20 +101,17 @@ def getGame():
 def try_click_game(game):
     next_button = try_get_carousel_button()
     for _ in range(60):
-        try:
+        if wait_until_clickable_then_click(game["xpath"], 1):
             # Wait 1 second for the game to become clickable, throw an exception if it doesn't
             # If the script gets stuck cycling through the carousel, means that the object it wants to click on
-            # is unclickable for some other reason I haven't encountered before
-            WebDriverWait(browser, 1).until(
-                EC.element_to_be_clickable((By.XPATH, game['xpath']))
-            ).click()
-        except:
-            # Click the next button, cycling through the carousel if it can
-            if next_button is not None:
-                next_button.click()
-        else:
+            # is unclickable for some other reason I haven't encountered before           
             # Exit the loop once the game was clicked
             return True
+        else:
+            # Click the next button, cycling through the carousel if it can
+            if next_button is not None:
+                print("Cycling through carousel")
+                next_button.click()           
     return False
 
 # Check for, and close, the cookies banner
@@ -135,13 +132,11 @@ def accept_cookies():
 
 # Get carousel next button
 def try_get_carousel_button():
-    html = BeautifulSoup(browser.page_source, 'lxml') # Grab the source text, and make a beautiful soup object
-    next_button_tag = html.find("button", { 'aria-label' : 'Next item' })
-    if next_button_tag is not None:
-        next_xpath = xpath_soup(next_button_tag)
-        return browser.find_element_by_xpath(next_xpath)
+    next_button_tag = wait_until_element_located("//*[@aria-label='Next item']")
+    if next_button_tag:
+        return next_button_tag
     else:
-        print('next button not found')
+        print("Carousel 'Next item' button not found")
         return None
 
 def start_firefox_browser(user_agent):
@@ -208,38 +203,35 @@ def get_free_games_list():
     if not re.search(epic_store_url, browser.current_url):
         browser.get(epic_store_url)
         
-    html = BeautifulSoup(browser.page_source, 'lxml') # Grab the source text, and make a beautiful soup object
-    spans = html.find_all('span') # Get all the span tags to make sure we get every available game
-    # Create a list for all the free game dictionaries
-    free_games = []
-    for span in spans:
-        if span.get_text().upper() == 'FREE NOW':
-            xpath = xpath_soup(span) # Get the xpath
-            browser_element = browser.find_element_by_xpath(xpath) # Use the xpath to grab the browser element (so we can click it)
-            free_games.append({'xpath': xpath, 'element': browser_element}) # Create object and add it to the list
-            
-    if len(free_games) == 0:
+    elements = []
+    elements = browser.find_elements_by_xpath("//*[text() = 'Free Now']")    
+    if len(elements) == 0:
         raise TypeError("Free games list is empty")
+    
+    free_games = []
+    for index, element in enumerate(elements):
+        free_games.append({"xpath": "(//*[text() = 'Free Now'])[" + str(index+1) + "]", # Literally "(//*[text() = 'Free Now'])[1]"
+                             "element": element})
     
     return free_games
 
 def claim_free_games():
     games = get_free_games_list()
     games_count = len(games)
+    print("Found " + str(games_count) + " free games")
     for index, game in enumerate(games): # Go thru each game we found and get it!
         if not try_click_game(game): # Try to click on the current game
             try:
-                game['element'].click() # Try to click on the game one last time
+                game.click() # Try to click on the game one last time
             except:
-                print("Skipped a game because I couldn't click on it") # If it didn't work, skip to the next game
+                game_claim_errors_count += 1
+                print("Game at index " + str(index) + " was skipped due to being unable to click on it") # If it didn't work, skip to the next game
                 continue
         getGame()
-        if (index < games_count):
+        if (index+1 < games_count):
             browser.get(epic_store_url) # Go back to the store page to get the other game
-        try: # Selenium complains this object no longer exists, so we need to re-get it so it doesn't explode
-            games[index + 1]['element'] = browser.find_element_by_xpath(games[index + 1]['xpath'])
-        except:
-            break
+            games[index+1]["element"] = browser.find_element_by_xpath(game["xpath"]) # Selenium complains this object no longer exists, so we need to re-get it so it doesn't explode
+            
 
 def wait_until_element_located(xstr, wait_duration=10):
     try:
