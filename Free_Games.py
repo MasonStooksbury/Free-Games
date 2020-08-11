@@ -65,14 +65,14 @@ def getGame():
     game_title = browser.title
     print("Claiming game " + game_title)    
     
-    wait_until_clickable_then_click("//*[text() = 'Continue']", 1) # Continue +18 button
+    wait_until_xpath_clickable_then_click("//*[text() = 'Continue']", 1) # Continue +18 button
 
-    if wait_until_element_located("//*[text() = 'Owned']", 1):
+    if wait_until_xpath_presence_located("//*[text() = 'Owned']", 1):
         print("Already owned")
         return
     
-    wait_until_clickable_then_click("//*[text() = 'Get']")
-    wait_until_clickable_then_click("//*[text() = 'Place Order']")    
+    wait_until_xpath_clickable_then_click("//*[text() = 'Get']")
+    wait_until_xpath_clickable_then_click("//*[text() = 'Place Order']")    
     
     # Wait until redirected to "THANK YOU" page
     wait_redirect_count = 0
@@ -80,15 +80,15 @@ def getGame():
     print("Waiting for order confirmation")
     while True:
         try:
-            if wait_until_element_located("//*[text() = 'I Agree']", 0.1): # EULA prompt
+            if wait_until_xpath_presence_located("//*[text() = 'I Agree']", 0.1): # EULA prompt
                 time.sleep(1)
-                wait_until_clickable_then_click("//*[text() = 'I Agree']")
+                wait_until_xpath_clickable_then_click("//*[text() = 'I Agree']")
                 print("EULA accepted")
             if (wait_redirect_count >= 5) & (has_warned_captcha == False):
                 print("Still waiting - Possible captcha requiring completion")
                 has_warned_captcha = True
                 
-            if wait_until_element_located("//*[contains(text(), 'Thank you for buying')]"):
+            if wait_until_xpath_presence_located("//*[contains(text(), 'Thank you for buying')]"):
                 break
             
             time.sleep(1)
@@ -101,7 +101,7 @@ def getGame():
 def try_click_game(game):
     next_button = try_get_carousel_button()
     for _ in range(60):
-        if wait_until_clickable_then_click(game["xpath"], 1):
+        if wait_until_xpath_clickable_then_click(game["xpath"], 1):
             # Wait 1 second for the game to become clickable, throw an exception if it doesn't
             # If the script gets stuck cycling through the carousel, means that the object it wants to click on
             # is unclickable for some other reason I haven't encountered before           
@@ -119,7 +119,7 @@ def accept_cookies():
     print("Accepting cookies")
     is_displayed_count = 0
     has_warned_cookies = False
-    cookies_button = wait_until_clickable_then_click("//*[@id='onetrust-accept-btn-handler']")
+    cookies_button = wait_until_xpath_clickable_then_click("//*[@id='onetrust-accept-btn-handler']")
     if cookies_button:
         while cookies_button.is_displayed(): # Wait until cookie banner disappears
             if (is_displayed_count >= 5) & (has_warned_cookies == False):
@@ -132,7 +132,7 @@ def accept_cookies():
 
 # Get carousel next button
 def try_get_carousel_button():
-    next_button_tag = wait_until_element_located("//*[@aria-label='Next item']")
+    next_button_tag = wait_until_xpath_presence_located("//*[@aria-label='Next item']")
     if next_button_tag:
         return next_button_tag
     else:
@@ -151,26 +151,26 @@ def log_into_account(email, password, two_fa_key=None):
     # Loading login page and waiting until ready
     print("Logging into account " + email)
     browser.get(epic_login_url + "?redirectUrl=" + uriencode(epic_store_url))
-    if not wait_until_element_located("//*[@id='email']"):
+    if not wait_until_xpath_presence_located("//*[@id='email']"):
         raise TypeError("Unable to find email input field")
 
     # Logging in into the account
     browser.find_element_by_id('email').send_keys(email)
     browser.find_element_by_id('password').send_keys(password)
-    if not wait_until_clickable_then_click("//*[@id='login']"):
+    if not wait_until_xpath_clickable_then_click("//*[@id='login']"):
         raise TypeError("Unable to find login button")
     # 2FA
     if (two_fa_key != None):
         wait_located_count = 0
         has_warned_captcha = False
-        while not wait_until_element_located("//*[@id='code']", 1):
+        while not wait_until_xpath_presence_located("//*[@id='code']", 1):
             if (wait_located_count >= 3) & (has_warned_captcha == False):
                 print("Waiting - Cannot find 2FA input field - Possible captcha requiring completion")
                 has_warned_captcha = True
             wait_located_count += 1
         browser.find_element_by_id('code').send_keys(Keys.HOME) # Make sure to be at beginning of field
         browser.find_element_by_id('code').send_keys(pyotp.TOTP(two_fa_key).now()) # 2FA login code
-        if not wait_until_clickable_then_click("//*[@id='continue']"):
+        if not wait_until_xpath_clickable_then_click("//*[@id='continue']"):
             raise TypeError("Unable to find 2FA continue button")
 
     # Waiting until redirected to store - captcha detection workaround
@@ -233,16 +233,15 @@ def claim_free_games():
             games[index+1]["element"] = browser.find_element_by_xpath(game["xpath"]) # Selenium complains this object no longer exists, so we need to re-get it so it doesn't explode
             
 
-def wait_until_element_located(xstr, wait_duration=10):
+def wait_until_xpath_presence_located(xstr, wait_duration=10):
     try:
         element = WebDriverWait(browser, wait_duration).until(EC.presence_of_element_located((By.XPATH, xstr)))
         return element
     except TimeoutException:
         return False
 
-def wait_until_clickable_then_click(xstr, wait_duration=10):
+def wait_until_xpath_clickable_then_click(xstr, wait_duration=10):
     try:
-        wait_until_element_located(xstr, wait_duration)
         element = WebDriverWait(browser, wait_duration).until(EC.element_to_be_clickable((By.XPATH, xstr)))
         time.sleep(0.5) # Small wait to avoid potential issues
         browser.find_element_by_xpath(xstr).click()
@@ -250,9 +249,8 @@ def wait_until_clickable_then_click(xstr, wait_duration=10):
     except TimeoutException:
         return False
     
-def wait_until_clickable(xstr, wait_duration=10):
+def wait_until_xpath_clickable(xstr, wait_duration=10):
     try:
-        wait_until_element_located(xstr, wait_duration)
         element = WebDriverWait(browser, wait_duration).until(EC.element_to_be_clickable((By.XPATH, xstr)))
         return element
     except TimeoutException:
