@@ -61,6 +61,8 @@ def getGame():
         browser.get( re.sub(language, "en-US", browser.current_url) )
     else:
         browser.get(browser.current_url)
+    wait_until_xpath_visible("//*[@id='siteNav']")
+    time.sleep(1)
                
     game_title = browser.title
     print("Claiming game " + game_title)    
@@ -185,9 +187,10 @@ def log_into_account(email, password, two_fa_key=None):
         wait_redirect_count += 1
     print("Successfully logged in " + email)
     browser.get(epic_store_url) # So it automatically waits until page is loaded
+    wait_until_xpath_visible("//*[@id='siteNav']")
+    time.sleep(1)
     
 def log_out():    
-    
     browser.get(epic_logout_url + "?redirectUrl=" + uriencode(epic_store_url))
     wait_redirect_count = 0
     has_warned_logout = False
@@ -202,6 +205,8 @@ def log_out():
 def get_free_games_list():   
     if not re.search(epic_store_url, browser.current_url):
         browser.get(epic_store_url)
+        wait_until_xpath_visible("//*[@id='siteNav']")
+        time.sleep(1)
         
     elements = []
     elements = browser.find_elements_by_xpath("//*[text() = 'Free Now']")    
@@ -230,6 +235,8 @@ def claim_free_games():
         getGame()
         if (index+1 < games_count):
             browser.get(epic_store_url) # Go back to the store page to get the other game
+            wait_until_xpath_visible("//*[@id='siteNav']")
+            time.sleep(1)
             games[index+1]["element"] = browser.find_element_by_xpath(game["xpath"]) # Selenium complains this object no longer exists, so we need to re-get it so it doesn't explode
             
 
@@ -255,7 +262,21 @@ def wait_until_xpath_clickable(xstr, wait_duration=10):
         return element
     except TimeoutException:
         return False
-
+    
+def wait_until_xpath_visible(xstr, wait_duration=10):
+    start_time = time.time()
+    while True:
+        try:
+            element = WebDriverWait(browser, wait_duration).until(EC.presence_of_element_located((By.XPATH, xstr)))
+            if element.is_displayed():
+                return element
+            if ( (time.time() - start_time) > wait_duration ):
+                return False
+            time.sleep(1)
+            
+        except TimeoutException:
+            return False
+    
 def show_exception_and_exit(exc_type, exc_value, tb):
     traceback.print_exception(exc_type, exc_value, tb)
     input("Press key to exit.")
