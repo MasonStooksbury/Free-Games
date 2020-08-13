@@ -286,9 +286,9 @@ def wait_until_xpath_visible(xstr, wait_duration=10):
 def show_exception_and_exit(exc_type, exc_value, tb):
     traceback.print_exception(exc_type, exc_value, tb)
     input("Press key to exit.")
-    sys.exit(-1)
     browser.quit()
-
+    sys.exit(-1)
+   
 ##### MAIN #####
 sys.excepthook = show_exception_and_exit
 game_claim_errors_count = 0
