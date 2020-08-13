@@ -81,18 +81,22 @@ def getGame():
     # Wait until redirected to "THANK YOU" page
     wait_redirect_count = 0
     has_warned_captcha = False
+    eula_accepted = False
     print("Waiting for order confirmation")
     while True:
         try:
-            if wait_until_xpath_visible("//*[text() = 'I Agree']", 1): # EULA prompt
-                time.sleep(1)
-                wait_until_xpath_clickable_then_click("//*[text() = 'I Agree']")
-                print("EULA accepted")
+            if (eula_accepted == False):
+                if wait_until_xpath_visible("//*[text() = 'I Agree']", 1): # EULA prompt
+                    time.sleep(1)
+                    wait_until_xpath_clickable_then_click("//*[text() = 'I Agree']")
+                    print("EULA accepted")
+                    eula_accepted = True
+                    
             if (wait_redirect_count >= 5) & (has_warned_captcha == False):
                 print("Still waiting - Possible captcha requiring completion")
                 has_warned_captcha = True
                 
-            if wait_until_xpath_visible("//*[contains(text(), 'Thank you for buying')]"):
+            if wait_until_xpath_visible("//*[contains(text(), 'Thank you for buying')]", 1):
                 break
             
             time.sleep(1)
