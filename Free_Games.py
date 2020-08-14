@@ -14,7 +14,7 @@ user_agent = ''
 
 
 
-import json, lxml.html, os, pyotp, re, sys, time, traceback,pickle
+import lxml.html, pyotp, re, sys, time, traceback
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
