@@ -10,15 +10,16 @@ from selenium.webdriver.support import expected_conditions as EC
 
 import lxml.html
 import time
+import os
 
 
 ##################### EDIT THESE ###############################
 # Replace these with your info
-email = ''
-password = ''
+email = os.environ["email"]
+password = os.environ["password"]
 
 # You will want to replace the user-agent below for yours. Just Google 'what is my user agent' and copy that between the single quotes below
-user_agent = ''
+user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36 Edg/84.0.522.52'
 ##################### EDIT THESE ###############################
 
 
