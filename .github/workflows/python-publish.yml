@@ -1,0 +1,53 @@
+name: py_scripts
+
+on:
+  #push:
+  #  branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    # 时间是按UTC设置的，实际执行时间，则自动按东八区执行
+    # 即+8小时，故实际执行时间为：8点，20点
+    - cron: 0 0 * * *
+
+jobs:
+  build:
+
+    runs-on: ubuntu-18.04
+    strategy:
+      max-parallel: 5
+      matrix:
+        python-version: [3.7]
+        #python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+#     - name: Install SeleniumBase
+#       run: |
+#         python setup.py install
+    - name: Install Chrome and Firefox
+      run: |
+        sudo apt install google-chrome-stable
+        sudo apt-get install firefox
+    - name: Install chromedriver and geckodriver (Firefox Webdriver)
+      run: |
+        seleniumbase install chromedriver
+        seleniumbase install geckodriver
+
+
+    
+    # TextNow保号任务
+    - name: textnow protect number
+      env:
+        email: ${{ secrets.email }}
+        password: ${{ secrets.password }}
+      run: |
+        python Free_Games.py
