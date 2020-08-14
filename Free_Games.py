@@ -14,19 +14,14 @@ user_agent = ''
 
 
 
+import json, lxml.html, os, pyotp, re, sys, time, traceback,pickle
 from bs4 import BeautifulSoup
-import lxml.html
-import pyotp
-import re
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import sys
-import time
-import traceback
 from urllib.parse import quote as uriencode
 
 # Find the xpath of a given soup object.
@@ -213,16 +208,22 @@ def get_free_games_list():
         browser.get(epic_store_url)
         wait_until_xpath_visible("//*[@id='siteNav']")
         time.sleep(1)
-        
-    elements = []
-    elements = browser.find_elements_by_xpath("//*[text() = 'Free Now']")    
-    if len(elements) == 0:
+    
+    free_now_xpath_str = "//*[translate(text(),'FREE NOW','free now') = 'free now']"
+    get_it_free_xpath_str = "//*[translate(text(),'GET IT FREE','get it free') = 'get it free']"           
+                
+    free_now_elements = browser.find_elements_by_xpath(free_now_xpath_str)
+    get_it_free_element = browser.find_elements_by_xpath(get_it_free_xpath_str)
+    if len(free_now_elements) == 0 & len(get_it_free_element) == 0:
         raise TypeError("Free games list is empty")
     
     free_games = []
-    for index, element in enumerate(elements):
-        free_games.append({"xpath": "(//*[text() = 'Free Now'])[" + str(index+1) + "]", # Literally "(//*[text() = 'Free Now'])[1]"
-                             "element": element})
+    for index, element in enumerate(free_now_elements):
+        num = "[" + str(index+1) + "]"
+        free_games.append({"xpath": "(" + free_now_xpath_str + ")" + num, "element": element}) # Literally "(//*[translate(text(),'FREE NOW','free now') = 'free now'])[1]"
+    for index, element in enumerate(get_it_free_element):
+        num = "[" + str(index+1) + "]"
+        free_games.append({"xpath": "(" + get_it_free_xpath_str + ")" + num, "element": element}) # Literally "(//*[translate(text(),'GET IT FREE','get it free') = 'get it free'])[1]"
     
     return free_games
 
