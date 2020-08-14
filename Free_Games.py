@@ -161,7 +161,7 @@ profile = webdriver.FirefoxProfile()
 profile.set_preference("general.useragent.override", user_agent)
 
 # Setup the browser object to use our modified profile
-browser = webdriver.Firefox(profile)
+browser = webdriver.Firefox(executable_path='geckodriver',options=profile)
 browser.get(web_path + '/login')
 
 # Give the page enough time to load before we enter anything
