@@ -155,13 +155,15 @@ def try_get_carousel_button():
 # Main store page for Epic Games Store
 web_path = '''https://www.epicgames.com/store/en-US'''
 
-profile = webdriver.FirefoxProfile()
+# profile = webdriver.FirefoxProfile()
 
-# We will use the user-agent to trick the website into thinking we are a real person. This usually subverts most basic security
-profile.set_preference("general.useragent.override", user_agent)
+# # We will use the user-agent to trick the website into thinking we are a real person. This usually subverts most basic security
+# profile.set_preference("general.useragent.override", user_agent)
+options = webdriver.FirefoxOptions()
+options.add_argument('-headless')  # 无头参数
 
 # Setup the browser object to use our modified profile
-browser = webdriver.Firefox(executable_path='geckodriver',profiles=profile)
+browser = webdriver.Firefox(executable_path='geckodriver',options=options)
 browser.get(web_path + '/login')
 
 # Give the page enough time to load before we enter anything
