@@ -51,3 +51,4 @@ certifi>=2020.6.20
 pdfminer.six==20191110;python_version<"3.5"
 pdfminer.six==20200517;python_version>="3.5"
 rsa
+lxml
