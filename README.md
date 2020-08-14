@@ -1,4 +1,14 @@
 # Free_Games.py Description
+
+###更新(14/08/2020)
+-利用github action实现每天零点自动领取。
+
+#设置
+fork项目后，在Settings中的Secrets设置两个Secret。
+-EMAIL(Epic登录邮箱)
+-PASSWORD(Epic登录密码)
+
+
 Literally just a script that is automatically ran via Windows Task Scheduler or Cron that logs into the Epic Games Store website and grabs the free games for the week. I've tested it on Windows, but there isn't any reason it wouldn't work on Linux as well. Just change the top line from "#! python3" to "#!/usr/bin/python3" and it should be fine. 
 
 Another shout-out to ergoithz and their amazing function that finds the xpath for a given BeautifulSoup object. These updates wouldn't be possible without it! Check out their super-helpful function here: https://gist.github.com/ergoithz/6cf043e3fdedd1b94fcf
