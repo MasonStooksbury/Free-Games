@@ -9,13 +9,16 @@ Finally, a warm thank you to:
   - Andriesmenze for fixing the script to work in the EU due to certain pop-ups that I wasn't seeing. Their work is very appreciated!
   - Steve-Tech for adding some code to click the "Sign in with Epic Games" that apparently shows up now.
   - Spifffff for modifying the Xpath for the cookies banner, for noticing that EGS requires email-only for logging in now, and for modifying the script to work with the games carousel that shows up sometimes
+  - lemasato for adding 2FA support, adding some more reliability and readability changes as well as adding functionality for multiple accounts to be used.
 
 Hope you enjoy!
   - Mason Stooksbury <><
 
 
-### Updates! (07/29/2020)
-  - Thanks to Spifffff again for helping out again by fixing wait times and the cookie banner. The script seems much more robust and bulletproof.
+### Updates! (08/14/2020)
+  - You'll need to install "pyotp" for the new changes in order to keep your script working. Follow the instructions below to either setup your 2FA key or set it to nothing.
+  - Thanks to lemasato for adding a bunch of changes that help with reliability, readability, as well as changes that supoort 2FA, multiple accounts, and more!
+  - Thanks as well to Spifffff again for helping with testing and offering some insight.
 
 
 # Setup
