@@ -1,8 +1,8 @@
 name: py_scripts
 
 on:
-  push:
-   branches: [ master ]
+#   push:
+#    branches: [ master ]
   pull_request:
     branches: [ master ]
   schedule:
@@ -41,11 +41,7 @@ jobs:
       run: |
         seleniumbase install chromedriver
         seleniumbase install geckodriver
-
-
-    
-    # TextNow保号任务
-    - name: textnow protect number
+    - name: Get Free Games
       env:
         email: ${{ secrets.email }}
         password: ${{ secrets.password }}
