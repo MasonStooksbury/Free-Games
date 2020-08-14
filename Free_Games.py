@@ -1,21 +1,11 @@
 #! python3
-
 # Free_Games.py - A script that Windows Task Scheduler can run to go and get me them sweet sweet free games I'll probably never play
-
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
-import lxml.html
-import time
-
 
 ##################### EDIT THESE ###############################
 # Replace these with your info
-email = ''
-password = ''
+credentials = []
+credentials.append(["myemail@domain.com", "password", "5MBJBQUZRU9K1XULAIL8FKH0UPDX6LDESZEHOFMCIBCYSZ2UEYTQ"]) # Example for account with 2FA
+credentials.append(["myemail@domain.com", "password"]) # Example for account without 2FA
 
 # You will want to replace the user-agent below for yours. Just Google 'what is my user agent' and copy that between the single quotes below
 user_agent = ''
@@ -24,9 +14,15 @@ user_agent = ''
 
 
 
-
-
-
+import lxml.html, pyotp, re, sys, time, traceback
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from urllib.parse import quote as uriencode
 
 # Find the xpath of a given soup object.
 # Full credit goes to ergoithz over at:               https://gist.github.com/ergoithz
@@ -49,206 +45,271 @@ def xpath_soup(element):
 
 # Make a function to actually get the game that we can call later
 def getGame():
-    time.sleep(7)
-    # Re-get the source so that we can look for any "Continue" buttons
-    html = BeautifulSoup(browser.page_source, 'lxml')
-    try:
-        spans = html.find_all('span')
-        # Check for a "Continue" button for the 18+ games. If we find it, click it
-        for span in spans:
-            if span.get_text().upper() == 'CONTINUE':
-                # Get the xpath
-                xpath = xpath_soup(span)
-                # Use the xpath to grab the browser element (so we can click it)
-                geez_dad_im_not_a_kid_anymore = browser.find_element_by_xpath(xpath)
-                geez_dad_im_not_a_kid_anymore.click()
+    language = None
+    while not isinstance(language, str):
+        try: 
+            language = re.search(r"/store/(\D+?)/", browser.current_url).group(1)
+        except Exception:
+            pass
+    if language != "en-US":
+        print("Product page loaded in language other than english, reloading as english")
+        browser.get( re.sub(language, "en-US", browser.current_url) )
+    else:
+        browser.get(browser.current_url)
+    wait_until_xpath_visible("//*[@id='siteNav']")
+    time.sleep(1)
+               
+    game_title = browser.title
+    print("Claiming game " + game_title)    
+    
+    wait_until_xpath_clickable_then_click("//*[text() = 'Continue']", 1) # Continue +18 button
+
+    if wait_until_xpath_visible("//*[text() = 'Owned']", 1):
+        print("Already owned")
+        return
+    
+    if not wait_until_xpath_clickable_then_click("//*[text() = 'Get']"):
+        raise TypeError("Unable to find 'Get' button")
+    if not wait_until_xpath_clickable_then_click("//*[text() = 'Place Order']"):
+        raise TypeError("Unable to find 'Place Order' button")
+    
+    # Wait until redirected to "THANK YOU" page
+    wait_redirect_count = 0
+    has_warned_captcha = False
+    eula_accepted = False
+    print("Waiting for order confirmation")
+    while True:
+        try:
+            if (eula_accepted == False):
+                if wait_until_xpath_visible("//*[text() = 'I Agree']", 1): # EULA prompt
+                    time.sleep(1)
+                    wait_until_xpath_clickable_then_click("//*[text() = 'I Agree']")
+                    print("EULA accepted")
+                    eula_accepted = True
+                    
+            if (wait_redirect_count >= 5) & (has_warned_captcha == False):
+                print("Still waiting - Possible captcha requiring completion")
+                has_warned_captcha = True
+                
+            if wait_until_xpath_visible("//*[contains(text(), 'Thank you for buying')]", 1):
                 break
-        time.sleep(7)
-    except:
-        print()
-
-    # Get the source again, just incase we came from clicking the potential "Continue" button
-    html = BeautifulSoup(browser.page_source, 'lxml')
-
-    # Get all the button tags so we can see whether we need to grab the game or leave
-    buttons = html.find_all('button')
-
-    for button in buttons:
-        if button.get_text().upper() == 'OWNED':
-            break
-        if button.get_text().upper() == 'GET':
-            # Get the xpath of this button
-            xpath = xpath_soup(button)
-            # Use the xpath to grab the browser element (so we can click it)
-            browser_element = browser.find_element_by_xpath(xpath)
-            browser_element.click()
-            time.sleep(4)
-
-            # Re-get the source (again)
-            html = BeautifulSoup(browser.page_source, 'lxml')
-            # Get all the spans so we can get the "Place Order" button
-            spans = html.find_all('span')
-
-            for span in spans:
-                if span.get_text().upper() == 'PLACE ORDER':
-                    # Get the xpath
-                    xpath = xpath_soup(span)
-                    # Use the xpath to grab the browser element (so we can click it)
-                    purchase_button_element = browser.find_element_by_xpath(xpath)
-                    # Create object and add it to the list
-                    purchase_button_element.click()
-                    break
-            # If the EULA prompt shows up, click it
-            try:
-                browser.find_element_by_xpath('''//span[contains(text(),'I Agree')]''')
-            except:
-                print()
-            else:
-                EU_Refund_and_Right_of_Withdrawal_Information = browser.find_element_by_xpath('''//span[contains(text(),'I Agree')]''')
-                EU_Refund_and_Right_of_Withdrawal_Information.click()
-                time.sleep(2)
-            # We only want the first one (usually the game), so leave
-            break
+            
+            time.sleep(1)
+            wait_redirect_count += 1
+        except Exception:
+            pass
+    print("Order confirmed")
 
 # Try clicking on a game
 def try_click_game(game):
     next_button = try_get_carousel_button()
     for _ in range(60):
-        try:
+        if wait_until_xpath_clickable_then_click(game["xpath"], 1):
             # Wait 1 second for the game to become clickable, throw an exception if it doesn't
             # If the script gets stuck cycling through the carousel, means that the object it wants to click on
-            # is unclickable for some other reason I haven't encountered before
-            WebDriverWait(browser, 1).until(
-                EC.element_to_be_clickable((By.XPATH, game['xpath']))
-            ).click()
-        except:
-            # Click the next button, cycling through the carousel if it can
-            if next_button is not None:
-                next_button.click()
-        else:
+            # is unclickable for some other reason I haven't encountered before           
             # Exit the loop once the game was clicked
             return True
+        else:
+            # Click the next button, cycling through the carousel if it can
+            if next_button is not None:
+                print("Cycling through carousel")
+                next_button.click()           
     return False
 
 # Check for, and close, the cookies banner
-def try_accept_cookies():
-    # Searches soup for the button on the cookie banner
-    cookie_tag = html.find('button', { 'id' : 'onetrust-accept-btn-handler'})
-    if cookie_tag:
-        #print('cookie tag found')
-        cookie_xpath = xpath_soup(cookie_tag)
-        cookie_button = browser.find_element_by_xpath(cookie_xpath).click()
+def accept_cookies():
+    print("Accepting cookies")
+    is_displayed_count = 0
+    has_warned_cookies = False
+    cookies_button = wait_until_xpath_clickable_then_click("//*[@id='onetrust-accept-btn-handler']")
+    if cookies_button:
+        while cookies_button.is_displayed(): # Wait until cookie banner disappears
+            if (is_displayed_count >= 5) & (has_warned_cookies == False):
+                print("Waiting - Cookies banner is still visible and obscuring games elements")
+            is_displayed_count += 1
+            time.sleep(1)
+        print("Successfully accepted cookies")
+    else:
+        print("Cookies banner not found, probably accepted already")
 
 # Get carousel next button
 def try_get_carousel_button():
-    next_button_tag = html.find("button", { 'aria-label' : 'Next item' })
-    if next_button_tag is not None:
-        next_xpath = xpath_soup(next_button_tag)
-        return browser.find_element_by_xpath(next_xpath)
+    next_button_tag = wait_until_xpath_visible("//*[@aria-label='Next item']")
+    if next_button_tag:
+        return next_button_tag
     else:
-        print('next button not found')
+        print("Carousel 'Next item' button not found")
         return None
 
-##### MAIN #####
+def start_firefox_browser(user_agent):
+    profile = webdriver.FirefoxProfile()
+    profile.set_preference("general.useragent.override", user_agent) # We will use the user-agent to trick the website into thinking we are a real person. This usually subverts most basic security
 
-# Main store page for Epic Games Store
-web_path = '''https://www.epicgames.com/store/en-US'''
+    browser = webdriver.Firefox(profile) # Setup the browser object to use our modified profile
+    browser.maximize_window()
+    return browser
 
-profile = webdriver.FirefoxProfile()
+def log_into_account(email, password, two_fa_key=None):
+    # Loading login page and waiting until ready
+    print("Logging into account " + email)
+    browser.get(epic_login_url + "?redirectUrl=" + uriencode(epic_store_url))
+    if not wait_until_xpath_presence_located("//*[@id='email']"):
+        raise TypeError("Unable to find email input field")
 
-# We will use the user-agent to trick the website into thinking we are a real person. This usually subverts most basic security
-profile.set_preference("general.useragent.override", user_agent)
+    # Logging in into the account
+    browser.find_element_by_id('email').send_keys(email)
+    browser.find_element_by_id('password').send_keys(password)
+    if not wait_until_xpath_clickable_then_click("//*[@id='login']"):
+        raise TypeError("Unable to find login button")
+    # 2FA
+    if (two_fa_key != None):
+        wait_located_count = 0
+        has_warned_captcha = False
+        while not wait_until_xpath_presence_located("//*[@id='code']", 1):
+            if (wait_located_count >= 3) & (has_warned_captcha == False):
+                print("Waiting - Cannot find 2FA input field - Possible captcha requiring completion")
+                has_warned_captcha = True
+            wait_located_count += 1
+        browser.find_element_by_id('code').send_keys(Keys.HOME) # Make sure to be at beginning of field
+        browser.find_element_by_id('code').send_keys(pyotp.TOTP(two_fa_key).now()) # 2FA login code
+        if not wait_until_xpath_clickable_then_click("//*[@id='continue']"):
+            raise TypeError("Unable to find 2FA continue button")
 
-# Setup the browser object to use our modified profile
-browser = webdriver.Firefox(profile)
-browser.get(web_path + '/login')
+    # Waiting until redirected to store - captcha detection workaround
+    wait_redirect_count = 0
+    has_warned_captcha = False
+    print("Waiting to be automatically redirected to store page")
+    while not re.search(epic_store_url, browser.current_url):
+        if (wait_redirect_count >= 5) & (has_warned_captcha == False):
+            print("Still waiting - Possible captcha requiring completion")
+            has_warned_captcha = True
+        time.sleep(1)
+        wait_redirect_count += 1
+    print("Successfully logged in " + email)
+    browser.get(epic_store_url) # So it automatically waits until page is loaded
+    wait_until_xpath_visible("//*[@id='siteNav']")
+    time.sleep(1)
+    
+def log_out():    
+    browser.get(epic_logout_url + "?redirectUrl=" + uriencode(epic_store_url))
+    wait_redirect_count = 0
+    has_warned_logout = False
+    while not re.search(epic_store_url, browser.current_url):
+        if (wait_redirect_count >= 5) & (has_warned_logout == False):
+            print("Still waiting to be redirected to store page after logout")
+            has_warned_logout = True
+        time.sleep(1)
+        wait_redirect_count += 1
+    print("Successfully logged out\n")
 
-# Give the page enough time to load before we enter anything
-time.sleep(5)
+def get_free_games_list():   
+    if not re.search(epic_store_url, browser.current_url):
+        browser.get(epic_store_url)
+        wait_until_xpath_visible("//*[@id='siteNav']")
+        time.sleep(1)
+    
+    free_now_xpath_str = "//*[translate(text(),'FREE NOW','free now') = 'free now']"
+    get_it_free_xpath_str = "//*[translate(text(),'GET IT FREE','get it free') = 'get it free']"           
+                
+    free_now_elements = browser.find_elements_by_xpath(free_now_xpath_str)
+    get_it_free_element = browser.find_elements_by_xpath(get_it_free_xpath_str)
+    if len(free_now_elements) == 0 & len(get_it_free_element) == 0:
+        raise TypeError("Free games list is empty")
+    
+    free_games = []
+    for index, element in enumerate(free_now_elements):
+        num = "[" + str(index+1) + "]"
+        free_games.append({"xpath": "(" + free_now_xpath_str + ")" + num, "element": element}) # Literally "(//*[translate(text(),'FREE NOW','free now') = 'free now'])[1]"
+    for index, element in enumerate(get_it_free_element):
+        num = "[" + str(index+1) + "]"
+        free_games.append({"xpath": "(" + get_it_free_xpath_str + ")" + num, "element": element}) # Literally "(//*[translate(text(),'GET IT FREE','get it free') = 'get it free'])[1]"
+    
+    return free_games
 
-# Click 'Sign in with Epic Games'
-browser.find_element_by_id("login-with-epic").click()
-time.sleep(5)
+def claim_free_games():
+    games = get_free_games_list()
+    games_count = len(games)
+    print("Found " + str(games_count) + " free games")
+    for index, game in enumerate(games): # Go thru each game we found and get it!
+        if not try_click_game(game): # Try to click on the current game
+            try:
+                game.click() # Try to click on the game one last time
+            except:
+                game_claim_errors_count += 1
+                print("Game at index " + str(index) + " was skipped due to being unable to click on it") # If it didn't work, skip to the next game
+                continue
+        getGame()
+        if (index+1 < games_count):
+            browser.get(epic_store_url) # Go back to the store page to get the other game
+            wait_until_xpath_visible("//*[@id='siteNav']")
+            time.sleep(1)
+            games[index+1]["element"] = browser.find_element_by_xpath(game["xpath"]) # Selenium complains this object no longer exists, so we need to re-get it so it doesn't explode
+            
 
-# Let's login and get that out of the way
-fill_out_user = browser.find_element_by_id('email')
-fill_out_user.send_keys(email)
-
-fill_out_pass = browser.find_element_by_id('password')
-fill_out_pass.send_keys(password)
-
-fill_out_pass.submit()
-# I increased this wait to manually solve captchas during testing
-time.sleep(45)
-
-
-
-# Go back to the store page
-browser.get(web_path)
-# Give the page enough time to load before grabbing the source text
-# If you get any weird errors related to 'root' or anything, start here and adjust the time
-time.sleep(4)
-
-# Grab the source text, and make a beautiful soup object
-html = BeautifulSoup(browser.page_source, 'lxml')
-
-try_accept_cookies()
-
-# Get all the span tags to make sure we get every available game
-spans = html.find_all('span')
-
-# Create a list for all the game dictionaries
-games = []
-for span in spans:
-    if span.get_text().upper() == 'FREE NOW':
-        # Get the xpath
-        xpath = xpath_soup(span)
-        # Use the xpath to grab the browser element (so we can click it)
-        browser_element = browser.find_element_by_xpath(xpath)
-        # Create object and add it to the list
-        games.append({'xpath': xpath,
-                      'element': browser_element
-                      })
-
-# Go thru each game we found and get it!
-for index, game in enumerate(games):
-    # Try to click on the current game
-    if not try_click_game(game):
-        # Try to clear the cookies again to see if that helps
-        try_accept_cookies()
-        try:
-            # Try to click on the game one last time
-            game['element'].click()
-        except:
-            # If it didn't work, skip to the next game
-            print("Skipped a game because I couldn't click on it")
-            continue
-    getGame()
-    # Go back to the store page to get the other game
-    browser.get(web_path)
-    # Give the page enough time to load before grabbing the source text
-    time.sleep(5)
-    # Selenium complains this object no longer exists, so we need to re-get it so it doesn't explode
+def wait_until_xpath_presence_located(xstr, wait_duration=10):
     try:
-        games[index + 1]['element'] = browser.find_element_by_xpath(games[index + 1]['xpath'])
-    except:
-        break
+        element = WebDriverWait(browser, wait_duration).until(EC.presence_of_element_located((By.XPATH, xstr)))
+        return element
+    except TimeoutException:
+        return False
 
-# Close everything
+def wait_until_xpath_clickable_then_click(xstr, wait_duration=10):
+    try:
+        element = WebDriverWait(browser, wait_duration).until(EC.element_to_be_clickable((By.XPATH, xstr)))
+        time.sleep(0.5) # Small wait to avoid potential issues
+        browser.find_element_by_xpath(xstr).click()
+        return element
+    except TimeoutException:
+        return False
+    
+def wait_until_xpath_clickable(xstr, wait_duration=10):
+    try:
+        element = WebDriverWait(browser, wait_duration).until(EC.element_to_be_clickable((By.XPATH, xstr)))
+        return element
+    except TimeoutException:
+        return False
+    
+def wait_until_xpath_visible(xstr, wait_duration=10):
+    start_time = time.time()
+    while True:
+        try:
+            element = WebDriverWait(browser, wait_duration).until(EC.presence_of_element_located((By.XPATH, xstr)))
+            if element.is_displayed():
+                return element
+            if ( (time.time() - start_time) > wait_duration ):
+                return False
+            time.sleep(1)
+            
+        except TimeoutException:
+            return False
+    
+def show_exception_and_exit(exc_type, exc_value, tb):
+    traceback.print_exception(exc_type, exc_value, tb)
+    input("Press key to exit.")
+    browser.quit()
+    sys.exit(-1)
+   
+##### MAIN #####
+sys.excepthook = show_exception_and_exit
+game_claim_errors_count = 0
+
+epic_home_url = "https://www.epicgames.com/site/en-US/home"
+epic_store_url = "https://www.epicgames.com/store/en-US"
+epic_login_url = "https://www.epicgames.com/id/login/epic"
+epic_logout_url = "https://www.epicgames.com/id/logout"
+
+browser = start_firefox_browser(user_agent)
+for index, account in enumerate(credentials):
+    if len(account) == 3:
+        log_into_account(account[0], account[1], account[2])
+    else:
+        log_into_account(account[0], account[1])
+    if index == 0:
+        accept_cookies()
+    claim_free_games()
+    log_out()
 browser.quit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if game_claim_errors_count > 0:
+    print("/!\\ Some games failed to be claimed /!\\")
+    input("Press any key to exit.")
