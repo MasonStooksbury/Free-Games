@@ -1,0 +1,7 @@
+beautifulsoup4==4.9.1
+lxml==4.5.2
+pyotp==2.4.0
+python-dotenv==0.14.0
+selenium==3.141.0
+soupsieve==2.0.1
+urllib3==1.25.10
