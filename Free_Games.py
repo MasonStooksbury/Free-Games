@@ -3,12 +3,10 @@
 
 ##################### EDIT THESE ###############################
 # Replace these with your info
-credentials = []
-credentials.append(["myemail@domain.com", "password", "5MBJBQUZRU9K1XULAIL8FKH0UPDX6LDESZEHOFMCIBCYSZ2UEYTQ"]) # Example for account with 2FA
-credentials.append(["myemail@domain.com", "password"]) # Example for account without 2FA
+credentials = [os.getenv("USERNAME"), os.getenv("PASSWORD"), os.getenv("TFA_TOKEN") if len(os.getenv("TFA_TOKEN") > 0 else None)]
 
-# You will want to replace the user-agent below for yours. Just Google 'what is my user agent' and copy that between the single quotes below
-user_agent = ''
+# You may desire to replace the user-agent below. You can leave it as is or google 'what is my user agent' and copy that between the single quotes below
+user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
 ##################### EDIT THESE ###############################
 
 
@@ -301,10 +299,7 @@ epic_logout_url = "https://www.epicgames.com/id/logout"
 
 browser = start_firefox_browser(user_agent)
 for index, account in enumerate(credentials):
-    if len(account) == 3:
-        log_into_account(account[0], account[1], account[2])
-    else:
-        log_into_account(account[0], account[1])
+    log_into_account(*account)
     if index == 0:
         accept_cookies()
     claim_free_games()
