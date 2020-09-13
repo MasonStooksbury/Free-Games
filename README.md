@@ -2,7 +2,7 @@
 
 Literally just a script that is automatically ran via Windows Task Scheduler or Cron that logs into the Epic Games Store website and grabs the free games for the week. I've tested it on Windows, but there isn't any reason it wouldn't work on Linux as well. Just change the top line from `#! python3` to `#!/usr/bin/python3` and it should be fine. 
 
-Another shout-out to [@ergoithz](https://github.com/ergoithz) and their amazing function that finds the xpath for a given BeautifulSoup object. These updates wouldn't be possible without it! Check out their super-helpful function here: https://gist.github.com/ergoithz/6cf043e3fdedd1b94fcf
+Big shout-out to [@ergoithz](https://github.com/ergoithz) and their amazing function that finds the xpath for a given BeautifulSoup object. These updates wouldn't be possible without it! Check out their super-helpful function here: https://gist.github.com/ergoithz/6cf043e3fdedd1b94fcf
 
 Another *huge* shout-out to [@SonOfDiablo](https://github.com/SonOfDiablo) for creating and providing their awesome PowerShell script for installing geckodriver on Windows! Now you don't have to follow all the steps mentioned before. Just install the PowerShell script, and run it. This will: download and install the latest geckodriver for the correct architecture, install it, and add it to your path if it isn't already there: automagically! Find the script here: https://gist.github.com/SonOfDiablo/81f3d610295c69c777b512e4da90393d
 
@@ -11,14 +11,13 @@ Finally, a warm thank you to:
   - [@Steve-Tech](https://github.com/Steve-Tech) for adding some code to click the "Sign in with Epic Games" that apparently shows up now.
   - [@Spifffff](https://github.com/Spifffff) for modifying the Xpath for the cookies banner, for noticing that EGS requires email-only for logging in now, and for modifying the script to work with the games carousel that shows up sometimes
   - [@lemasato](https://github.com/lemasato) for adding 2FA support, adding some more reliability and readability changes as well as adding functionality for multiple accounts to be used.
+  - [@Medallyon](https://github.com/Medallyon) for cleaning up my README file and adding "requirements.txt" functionality. This will help cut down on install time/complexity significantly.
 
 Hope you enjoy!
   - Mason Stooksbury <><
 
-### Updates! (08/14/2020)
-  - You'll need to install "pyotp" for the new changes in order to keep your script working. Follow the instructions below to either setup your 2FA key or set it to nothing.
-  - Thanks to [@lemasato](https://github.com/lemasato) for adding a bunch of changes that help with reliability, readability, as well as changes that supoort 2FA, multiple accounts, and more!
-  - Thanks as well to [@Spifffff](https://github.com/Spifffff) again for helping with testing and offering some insight.
+### Updates! (09/13/2020)
+  -You can now install all the necessary dependencies using the "requirements.txt" created by [@Medallyon](https://github.com/Medallyon). Also, please enjoy the newly manicured README, also courtesy of [@Medallyon](https://github.com/Medallyon)!
 
 # Setup
 
