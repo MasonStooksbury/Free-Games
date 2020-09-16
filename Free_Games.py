@@ -66,11 +66,18 @@ def getGame():
         print("Already owned")
         return
     
-    if not wait_until_xpath_clickable_then_click("//*[text() = 'Get']"):
-        raise TypeError("Unable to find 'Get' button")
+    try:
+        if not wait_until_xpath_clickable_then_click("//*[text() = 'Get']"):
+            raise TypeError("Unable to find 'Get' button")
+    except:
+        print("Failed to click on 'Get' button. Using parent element workaround... ", end='')
+        if not wait_until_xpath_clickable_then_click("//*[text() = 'Get']/.."):
+            raise TypeError("Workaround failed")
+        else:
+            print("Worked")
     if not wait_until_xpath_clickable_then_click("//*[text() = 'Place Order']"):
         raise TypeError("Unable to find 'Place Order' button")
-    
+        
     # Wait until redirected to "THANK YOU" page
     wait_redirect_count = 0
     has_warned_captcha = False
