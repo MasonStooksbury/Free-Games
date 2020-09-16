@@ -96,7 +96,7 @@ def getGame():
                 print("Still waiting - Possible captcha requiring completion")
                 has_warned_captcha = True
                 
-            if wait_until_xpath_visible("//*[contains(text(), 'Thank you for buying')]", 1):
+            if wait_until_xpath_visible("//*[contains(text(), 'Thank you for buying') or contains(text(), 'Got Epic Games')]", 1):
                 break
             
             time.sleep(1)
