@@ -11,14 +11,14 @@ Finally, a warm thank you to:
   - [@Steve-Tech](https://github.com/Steve-Tech) for adding some code to click the "Sign in with Epic Games" that apparently shows up now.
   - [@Spifffff](https://github.com/Spifffff) for modifying the Xpath for the cookies banner, for noticing that EGS requires email-only for logging in now, and for modifying the script to work with the games carousel that shows up sometimes
   - [@lemasato](https://github.com/lemasato) for adding 2FA support, adding some more reliability and readability changes as well as adding functionality for multiple accounts to be used and staying on top of changes they do to the site like text on buttons and what not.
-  - [@Medallyon](https://github.com/Medallyon) for cleaning up my README file and adding "requirements.txt" functionality. This will help cut down on install time/complexity significantly.
+  - [@Medallyon](https://github.com/Medallyon) for cleaning up my README file, adding "requirements.txt" functionality, and making some important syntax changes as well as some credential detection stuff. This will help cut down on install time/complexity significantly.
 
 Hope you enjoy!
   - Mason Stooksbury <><
 
-### Updates! (09/16/2020)
+### Updates! (09/19/2020)
+  - Thanks to [@Medallyon](https://github.com/Medallyon) for making some important syntax changes, credential detection, and cleaning things up a bit!
   - Thanks to [@lemasato](https://github.com/lemasato) for updating the script based on the new site changes. Apparently they reworded some stuff among other things.
-  - You can now install all the necessary dependencies using the "requirements.txt" created by [@Medallyon](https://github.com/Medallyon). Also, please enjoy the newly manicured README, also courtesy of [@Medallyon](https://github.com/Medallyon)!
 
 # Setup
 
