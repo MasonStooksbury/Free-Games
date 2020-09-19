@@ -1,16 +1,15 @@
 #! python3
 # Free_Games.py - A script that Windows Task Scheduler can run to go and get me them sweet sweet free games I'll probably never play
 
-##################### EDIT THESE ###############################
-# Replace these with your info
-credentials = [os.getenv("USERNAME"), os.getenv("PASSWORD"), os.getenv("TFA_TOKEN") if len(os.getenv("TFA_TOKEN") > 0 else None)]
+from os import getenv
+from dotenv import load_dotenv
+load_dotenv()
+
+credentials = [getenv("EPIC_EMAIL"), getenv("EPIC_PASSWORD"), getenv("EPIC_TFA_TOKEN") if len(getenv("EPIC_TFA_TOKEN")) > 0 else None]
+print(credentials)
 
 # You may desire to replace the user-agent below. You can leave it as is or google 'what is my user agent' and copy that between the single quotes below
-user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
-##################### EDIT THESE ###############################
-
-
-
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36"
 
 import lxml.html, pyotp, re, sys, time, traceback
 from bs4 import BeautifulSoup
@@ -305,13 +304,13 @@ epic_login_url = "https://www.epicgames.com/id/login/epic"
 epic_logout_url = "https://www.epicgames.com/id/logout"
 
 browser = start_firefox_browser(user_agent)
-for index, account in enumerate(credentials):
-    log_into_account(*account)
-    if index == 0:
-        accept_cookies()
-    claim_free_games()
-    log_out()
+log_into_account(*credentials)
+accept_cookies()
+claim_free_games()
+
+log_out()
 browser.quit()
+
 if game_claim_errors_count > 0:
     print("/!\\ Some games failed to be claimed /!\\")
     input("Press any key to exit.")
