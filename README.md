@@ -24,6 +24,8 @@ Hope you enjoy!
 
 ## Requirements
 
+First, clone this repo using `git clone https://github.com/MasonStooksbury/Free-Games.git`. Then,
+
 1. Run `pip install -r requirements.txt` to automatically install dependencies
 
 ***OR***
@@ -38,10 +40,10 @@ Install them manually:
 
 + `GeckoDriver` (selenium needs this) Linux users can use this script to do everything for you after installing "jq" which is a JSON processor: https://gist.github.com/cgoldberg/4097efbfeb40adf698a7d05e75e0ff51. Windows users can use this script provided by [@SonOfDiablo:](https://github.com/SonOfDiablo:) https://gist.github.com/SonOfDiablo/81f3d610295c69c777b512e4da90393d.
 + [Firefox](https://www.mozilla.org/firefox/new/) - You can technically do all of this with Chrome, but it involves some more setup with selenium and particular drivers and I'm just too lazy. This works perfectly fine.
-+ Replace the `email` and `password` variables in the code to match your Epic Games Store account. Be sure to leave the single quotes where they are.
-+ Finally, you'll also want to jump in and replace the `user_agent` variable. There are instructions inside the script on how to do this.
++ Enter the `email` and `password` variables in the `.env` file to match your Epic Games Store account. Don't include any quotes here.
++ Finally, you may also want to jump into `Free_Games.py` and replace the `user_agent` variable (but you don't have to). There are instructions inside the script on how to do this.
 
-# Two-factor authentication
+### Two-factor authentication
 
 If you already have 2FA enabled on your account, you will be required to disabled it temporarily. This is required to retrieve the key we need.
 
@@ -52,7 +54,11 @@ If you already have 2FA enabled on your account, you will be required to disable
 1. Keep a copy of the "**Rescue Codes**". This will come in handy to retrieve your account if you ever lose access to your Authentificator application (losing phone, etc.)
 1. In the python script, input the "**Manual Entry Key**" retrieved earlier in the corresponding field, again leaving the single quotes as is.
 1. Done!
-  
+
+### Finally
+
+Now all you have to do is run `python Free_Games.py`, sit back & relax while your free games are being claimed (actually, you may have to complete a captcha upon signing in , but that's it).
+
 # Setting up Windows Task Scheduler
 
 These steps should help you get Windows Task Scheduler setup in such a way that it will wake your computer from sleep and grab your free games then go back to sleep. It will also be setup to run again if something goes wrong as well as kill itself if it goes haywire. I realize the first picture shows it being setup for Vista and Windows Server 2008, but this was the only way it would work on Windows 10 without doing some wonky BIOS setup that only worked for some people.
