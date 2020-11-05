@@ -158,8 +158,8 @@ def log_into_account(email, password, two_fa_key=None):
     # Logging in into the account
     browser.find_element_by_id('email').send_keys(email)
     browser.find_element_by_id('password').send_keys(password)
-    if not wait_until_xpath_clickable_then_click("//*[@id='login']"):
-        raise TypeError("Unable to find login button")
+    if not wait_until_xpath_clickable_then_click("//*[@id='sign-in']"):
+        raise TypeError("Unable to find sign-in button")
     # 2FA
     if (two_fa_key != None):
         wait_located_count = 0
