@@ -16,9 +16,8 @@ Finally, a warm thank you to:
 Hope you enjoy!
   - Mason Stooksbury <><
 
-### Updates! (09/19/2020)
-  - Thanks to [@Medallyon](https://github.com/Medallyon) for making some important syntax changes, credential detection, and cleaning things up a bit!
-  - Thanks to [@lemasato](https://github.com/lemasato) for updating the script based on the new site changes. Apparently they reworded some stuff among other things.
+### Updates! (11/07/2020)
+  - Thanks to [@lemasato](https://github.com/lemasato) for updating the script based on the new site changes. Apparently they messed with the login button this time.
 
 # Setup
 
