@@ -31,9 +31,9 @@ First, clone this repo using `git clone https://github.com/MasonStooksbury/Free-
 
 Install them manually:
   + `pip install lxml` (for parsing the HTML from the webpage)
-  + `pip install selenium` (for "roboting" the website
+  + `pip install selenium` (for "roboting" the website)
   + `pip install beautifulsoup4` (for better/more robust finding of objects and things)
-  + `pip install pyotp` (for Two-factor authentication)
+  + `pip install pyotp` (for two-factor authentication)
 
 ### Additionally
 
@@ -44,11 +44,11 @@ Install them manually:
 
 ### Two-factor authentication
 
-If you already have 2FA enabled on your account, you will be required to disabled it temporarily. This is required to retrieve the key we need.
+If you already have 2FA enabled on your account, you will be required to disable it temporarily. This is required to retrieve the key we need.
 
 1. Go to [your Epic account settings](https://www.epicgames.com/account/password) and enable "**Authenticator App**".
 1. Keep a copy of the "**Manual Entry Key**". This will be used later in the python script. Do not close the page yet.
-1. On your phone, download [Google Authentificator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en) or another similar application.
+1. On your phone, download [Google Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en) or another similar application.
 1. Using the application, scan the QR code visible on browser. Enter the code obtained from the application on the browser and click "**Activate**".
 1. Keep a copy of the "**Rescue Codes**". This will come in handy to retrieve your account if you ever lose access to your Authentificator application (losing phone, etc.)
 1. In the python script, input the "**Manual Entry Key**" retrieved earlier in the corresponding field, again leaving the single quotes as is.
