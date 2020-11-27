@@ -14,10 +14,10 @@ Finally, a warm thank you to:
   - [@Medallyon](https://github.com/Medallyon) for cleaning up my README file, adding "requirements.txt" functionality, and making some important syntax changes as well as some credential detection stuff. This will help cut down on install time/complexity significantly.
 
 Hope you enjoy!
-  - Mason Stooksbury <><
+  #! Mason Stooksbury
 
-### Updates! (11/07/2020)
-  - Thanks to [@lemasato](https://github.com/lemasato) for updating the script based on the new site changes. Apparently they messed with the login button this time.
+### Updates! (11/27/2020)
+  - Thank you all so much for the support. We've hit over 60 stars on this little repo, over 10 forks, and 7 people are watching. It may not seem like much to most, but to think that I made this repo thinking a few people may use it and to watch a small little community continue to pour into it and fix issues, address problems, develop new tools to complement it, and even go out of their way to improve it has been humbling and I'm very thankful to each and every one of you. 2020 has been an awful year for many, and you've made mine a little brighter. Happy holidays, and thank you again so much.
 
 # Setup
 
