@@ -75,7 +75,9 @@ def getGame():
         else:
             print("Worked")
     if not wait_until_xpath_clickable_then_click("//*[text() = 'Place Order']"):
-        raise TypeError("Unable to find 'Place Order' button")
+        if not wait_until_xpath_clickable_then_click("//*[text() = 'Place Order']"):
+            if not wait_until_xpath_clickable_then_click("//*[text() = 'Place Order']"):
+                raise TypeError("Unable to find 'Place Order' button")
         
     # Wait until redirected to "THANK YOU" page
     wait_redirect_count = 0
