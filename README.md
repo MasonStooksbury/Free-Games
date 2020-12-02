@@ -39,8 +39,8 @@ Install them manually:
 
 + `GeckoDriver` (selenium needs this) Linux users can use this script to do everything for you after installing "jq" which is a JSON processor: https://gist.github.com/cgoldberg/4097efbfeb40adf698a7d05e75e0ff51. Windows users can use this script provided by [@SonOfDiablo:](https://github.com/SonOfDiablo:) https://gist.github.com/SonOfDiablo/81f3d610295c69c777b512e4da90393d.
 + [Firefox](https://www.mozilla.org/firefox/new/) - You can technically do all of this with Chrome, but it involves some more setup with selenium and particular drivers and I'm just too lazy. This works perfectly fine.
-+ Enter the `email` and `password` variables in the `.env` file to match your Epic Games Store account. Don't include any quotes here.
-+ You may add multiple user accounts using comma separated values, e.g. `EMAIL=a@a.com,b@b.com` `PASSWORD=pass1,pass2`
++ Enter the `EPIC_EMAIL` and `EPIC_PASSWORD` variables in the `.env` file to match your Epic Games Store account. Don't include any quotes here.
++ You may add multiple user accounts using comma separated values, e.g. `EPIC_EMAIL=a@a.com,b@b.com` `EPIC_PASSWORD=pass1,pass2`
 + Finally, you may also want to jump into `Free_Games.py` and replace the `user_agent` variable (but you don't have to). There are instructions inside the script on how to do this.
 
 ### Two-factor authentication
