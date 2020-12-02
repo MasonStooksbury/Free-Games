@@ -312,10 +312,10 @@ for credentials in credentialslist:
     log_into_account(*credentials)
     accept_cookies()
     claim_free_games()
+    if game_claim_errors_count > 0:
+        print("/!\\ Some games failed to be claimed /!\\")
     log_out()
 
 browser.quit()
 
-if game_claim_errors_count > 0:
-    print("/!\\ Some games failed to be claimed /!\\")
-    input("Press any key to exit.")
+input("Press any key to exit.")
