@@ -7,8 +7,6 @@ load_dotenv()
 
 # Pull credentials fromm .env, then transpose the matrix
 
-credentialslist = [
-
 a = [getenv("EPIC_EMAIL").split(","), getenv("EPIC_PASSWORD").split(","), getenv("EPIC_TFA_TOKEN").split(",")]
 credentialslist = [[a[j if len(j) > 0 else None][i if len(i) > 0 else None] for j in range(len(a))] for i in range(len(a[0]))]
 
