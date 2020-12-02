@@ -5,8 +5,8 @@ from os import getenv
 from dotenv import load_dotenv
 load_dotenv()
 
-# Pull credentials fromm .env, then transpose the matrix
-
+# Pull credentials from .env, then transpose the matrix.
+# .env variables should be comma-separated if using multiple users.
 a = [getenv("EPIC_EMAIL").split(","), getenv("EPIC_PASSWORD").split(","), getenv("EPIC_TFA_TOKEN").split(",")]
 credentialslist = [[a[j if len(str(j)) > 0 else None][i if len(str(i)) > 0 else None] for j in range(len(a))] for i in range(len(a[0]))]
 
