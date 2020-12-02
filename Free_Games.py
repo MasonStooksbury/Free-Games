@@ -317,5 +317,3 @@ for credentials in credentialslist:
     log_out()
 
 browser.quit()
-
-input("Press any key to exit.")
