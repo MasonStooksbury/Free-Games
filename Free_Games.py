@@ -11,15 +11,16 @@ print(credentials)
 # You may desire to replace the user-agent below. You can leave it as is or google 'what is my user agent' and copy that between the single quotes below
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36"
 
-import lxml.html, pyotp, re, sys, time, traceback
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 from urllib.parse import quote as uriencode
+from selenium import webdriver
+from bs4 import BeautifulSoup
+
+import lxml.html, pyotp, re, sys, time, traceback
 
 # Find the xpath of a given soup object.
 # Full credit goes to ergoithz over at:               https://gist.github.com/ergoithz
@@ -66,16 +67,16 @@ def getGame():
         return
     
     try:
-        if not wait_until_xpath_clickable_then_click("//*[text() = 'Get']"):
-            raise TypeError("Unable to find 'Get' button")
+        if not wait_until_xpath_clickable_then_click("//*[text() = 'Get']", 30):
+            print("Unable to find 'Get' button")
     except:
         print("Failed to click on 'Get' button. Using parent element workaround... ", end='')
-        if not wait_until_xpath_clickable_then_click("//*[text() = 'Get']/.."):
-            raise TypeError("Workaround failed")
+        if not wait_until_xpath_clickable_then_click("//*[text() = 'Get']/..", 30):
+            print("Workaround failed")
         else:
             print("Worked")
-    if not wait_until_xpath_clickable_then_click("//*[text() = 'Place Order']"):
-        raise TypeError("Unable to find 'Place Order' button")
+    if not wait_until_xpath_clickable_then_click("//*[text() = 'Place Order']", 30):
+        print('Unable to place order after 30 seconds')
         
     # Wait until redirected to "THANK YOU" page
     wait_redirect_count = 0
@@ -294,6 +295,10 @@ def show_exception_and_exit(exc_type, exc_value, tb):
     browser.quit()
     sys.exit(-1)
    
+
+
+
+
 ##### MAIN #####
 sys.excepthook = show_exception_and_exit
 game_claim_errors_count = 0
