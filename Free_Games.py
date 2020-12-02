@@ -8,7 +8,7 @@ load_dotenv()
 # Pull credentials fromm .env, then transpose the matrix
 
 a = [getenv("EPIC_EMAIL").split(","), getenv("EPIC_PASSWORD").split(","), getenv("EPIC_TFA_TOKEN").split(",")]
-credentialslist = [[a[j if len(j) > 0 else None][i if len(i) > 0 else None] for j in range(len(a))] for i in range(len(a[0]))]
+credentialslist = [[a[j if len(str(j)) > 0 else None][i if len(str(i)) > 0 else None] for j in range(len(a))] for i in range(len(a[0]))]
 
 # You may desire to replace the user-agent below. You can leave it as is or google 'what is my user agent' and copy that between the single quotes below
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36"
