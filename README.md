@@ -4,7 +4,6 @@
 ![](https://img.shields.io/github/forks/MasonStooksbury/Free-Games)
 ![](https://img.shields.io/github/license/MasonStooksbury/Free-Games)
 ![](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2FMasonStooksbury%2FFree-Games)
-[![Twitter Follow](https://img.shields.io/twitter/follow/LambBrainz.svg?style=social)](https://twitter.com/LambBrainz)
 
 Literally just a script that is automatically ran via Windows Task Scheduler or Cron that logs into the Epic Games Store website and grabs the free games for the week. I've tested it on Windows, but there isn't any reason it wouldn't work on Linux as well. Just change the top line from `#! python3` to `#!/usr/bin/python3` and it should be fine. 
 
