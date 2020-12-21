@@ -1,16 +1,17 @@
-#! python3
+#!/usr/bin/python3
 # Free_Games.py - A script that Windows Task Scheduler can run to go and get me them sweet sweet free games I'll probably never play
 
 from os import getenv
 from dotenv import load_dotenv
 try:
-    load_dotenv()
+    if getenv("IS_DOCKER"):  
+        load_dotenv()
 except Exception:
     print(".env missing might be a docker container.")
     pass
 
 credentials = [getenv("EPIC_EMAIL"), getenv("EPIC_PASSWORD"), getenv("EPIC_TFA_TOKEN") if len(getenv("EPIC_TFA_TOKEN")) > 0 else None]
-print(credentials)
+#print(credentials)
 
 # You may desire to replace the user-agent below. You can leave it as is or google 'what is my user agent' and copy that between the single quotes below
 user_agent = getenv("USER_AGENT")
@@ -153,8 +154,11 @@ def try_get_carousel_button():
 def start_firefox_browser(user_agent):
     profile = webdriver.FirefoxProfile()
     profile.set_preference("general.useragent.override", user_agent) # We will use the user-agent to trick the website into thinking we are a real person. This usually subverts most basic security
-
-    browser = webdriver.Firefox(profile) # Setup the browser object to use our modified profile
+    
+    fireFoxOptions = webdriver.FirefoxOptions()
+    if getenv("IS_DOCKER"):   
+        fireFoxOptions.headless = True
+    browser = webdriver.Firefox(firefox_profile=profile, options=fireFoxOptions) # Setup the browser object to use our modified profile
     browser.maximize_window()
     return browser
 
@@ -294,7 +298,8 @@ def wait_until_xpath_visible(xstr, wait_duration=10):
     
 def show_exception_and_exit(exc_type, exc_value, tb):
     traceback.print_exception(exc_type, exc_value, tb)
-    input("Press key to exit.")
+    if getenv("IS_DOCKER"):  
+        input("Press key to exit.")
     browser.quit()
     sys.exit(-1)
    
@@ -317,4 +322,5 @@ browser.quit()
 
 if game_claim_errors_count > 0:
     print("/!\\ Some games failed to be claimed /!\\")
-    input("Press any key to exit.")
+    if getenv("IS_DOCKER"):  
+        input("Press any key to exit.")
