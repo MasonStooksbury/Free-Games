@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENV EPIC_EMAIL=changeme
 ENV EPIC_PASSWORD=changeme
 ENV EPIC_TFA_TOKEN=changeme
-ENV USER_AGENT=changeme
+ENV USER_AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36"
 
 COPY ./Free_Games.py .
 
