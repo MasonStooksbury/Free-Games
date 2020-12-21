@@ -3,13 +3,17 @@
 
 from os import getenv
 from dotenv import load_dotenv
-load_dotenv()
+try:
+    load_dotenv()
+except Exception:
+    print(".env missing might be a docker container.")
+    pass
 
 credentials = [getenv("EPIC_EMAIL"), getenv("EPIC_PASSWORD"), getenv("EPIC_TFA_TOKEN") if len(getenv("EPIC_TFA_TOKEN")) > 0 else None]
 print(credentials)
 
 # You may desire to replace the user-agent below. You can leave it as is or google 'what is my user agent' and copy that between the single quotes below
-user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36"
+user_agent = getenv("USER_AGENT")
 
 import lxml.html, pyotp, re, sys, time, traceback
 from bs4 import BeautifulSoup
