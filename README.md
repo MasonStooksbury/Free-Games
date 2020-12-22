@@ -17,12 +17,14 @@ Finally, a warm thank you to:
   - [@Spifffff](https://github.com/Spifffff) for modifying the Xpath for the cookies banner, for noticing that EGS requires email-only for logging in now, and for modifying the script to work with the games carousel that shows up sometimes
   - [@lemasato](https://github.com/lemasato) for adding 2FA support, adding some more reliability and readability changes as well as adding functionality for multiple accounts to be used and staying on top of changes they do to the site like text on buttons and what not.
   - [@Medallyon](https://github.com/Medallyon) for cleaning up my README file, adding "requirements.txt" functionality, and making some important syntax changes as well as some credential detection stuff. This will help cut down on install time/complexity significantly.
+  - [@astranberg](https://github.com/astranberg) for expanding on multi-user support so you can now collect all the free games for multiple accounts.
 
 Hope you enjoy!
   #! Mason Stooksbury
 
-### Updates! (11/27/2020)
-  - Thank you all so much for the support. We've hit over 60 stars on this little repo, over 10 forks, and 7 people are watching. It may not seem like much to most, but to think that I made this repo thinking a few people may use it and to watch a small little community continue to pour into it and fix issues, address problems, develop new tools to complement it, and even go out of their way to improve it has been humbling and I'm very thankful to each and every one of you. 2020 has been an awful year for many, and you've made mine a little brighter. Happy holidays, and thank you again so much.
+### Updates! (12/21/2020)
+  - Multi-user support so that free games can be claimed for as many accounts as you have.
+  - Thank you again! In just a month we've gained like 20 more stars for a total of 80! And almost 10 more forks! You all continue to humble me with the amount of support this thing has gotten. Thank you again, and may your 2021 be so much better than this year.
 
 # Setup
 
