@@ -10,7 +10,6 @@ except expression:
     print("might be a docker, no .env file present")
     pass
 
-
 # Pull credentials from .env, then transpose the matrix.
 # .env variables should be comma-separated if using multiple users.
 a = [getenv("EPIC_EMAIL").split(","), getenv("EPIC_PASSWORD").split(","), getenv("EPIC_TFA_TOKEN").split(",")]
@@ -321,5 +320,6 @@ for credentials in credentialslist:
     if game_claim_errors_count > 0:
         print("/!\\ Some games failed to be claimed /!\\")
     log_out()
+
 
 browser.quit()

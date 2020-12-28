@@ -17,12 +17,14 @@ Finally, a warm thank you to:
   - [@Spifffff](https://github.com/Spifffff) for modifying the Xpath for the cookies banner, for noticing that EGS requires email-only for logging in now, and for modifying the script to work with the games carousel that shows up sometimes
   - [@lemasato](https://github.com/lemasato) for adding 2FA support, adding some more reliability and readability changes as well as adding functionality for multiple accounts to be used and staying on top of changes they do to the site like text on buttons and what not.
   - [@Medallyon](https://github.com/Medallyon) for cleaning up my README file, adding "requirements.txt" functionality, and making some important syntax changes as well as some credential detection stuff. This will help cut down on install time/complexity significantly.
+  - [@astranberg](https://github.com/astranberg) for expanding on multi-user support so you can now collect all the free games for multiple accounts.
 
 Hope you enjoy!
   #! Mason Stooksbury
 
-### Updates! (11/27/2020)
-  - Thank you all so much for the support. We've hit over 60 stars on this little repo, over 10 forks, and 7 people are watching. It may not seem like much to most, but to think that I made this repo thinking a few people may use it and to watch a small little community continue to pour into it and fix issues, address problems, develop new tools to complement it, and even go out of their way to improve it has been humbling and I'm very thankful to each and every one of you. 2020 has been an awful year for many, and you've made mine a little brighter. Happy holidays, and thank you again so much.
+### Updates! (12/21/2020)
+  - Multi-user support so that free games can be claimed for as many accounts as you have.
+  - Thank you again! In just a month we've gained like 20 more stars for a total of 80! And almost 10 more forks! You all continue to humble me with the amount of support this thing has gotten. Thank you again, and may your 2021 be so much better than this year.
 
 # Setup
 
@@ -44,7 +46,8 @@ Install them manually:
 
 + `GeckoDriver` (selenium needs this) Linux users can use this script to do everything for you after installing "jq" which is a JSON processor: https://gist.github.com/cgoldberg/4097efbfeb40adf698a7d05e75e0ff51. Windows users can use this script provided by [@SonOfDiablo:](https://github.com/SonOfDiablo:) https://gist.github.com/SonOfDiablo/81f3d610295c69c777b512e4da90393d.
 + [Firefox](https://www.mozilla.org/firefox/new/) - You can technically do all of this with Chrome, but it involves some more setup with selenium and particular drivers and I'm just too lazy. This works perfectly fine.
-+ Enter the `email` and `password` variables in the `.env` file to match your Epic Games Store account. Don't include any quotes here.
++ Enter the `EPIC_EMAIL` and `EPIC_PASSWORD` variables in the `.env` file to match your Epic Games Store account. Don't include any quotes here.
++ You may add multiple user accounts using comma separated values, e.g. `EPIC_EMAIL=a@a.com,b@b.com` `EPIC_PASSWORD=pass1,pass2`
 + Finally, you may also want to jump into `Free_Games.py` and replace the `user_agent` variable (but you don't have to). There are instructions inside the script on how to do this.
 
 ### Two-factor authentication
