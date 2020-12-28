@@ -1,17 +1,20 @@
-#!/usr/bin/python3
+#! python3
 # Free_Games.py - A script that Windows Task Scheduler can run to go and get me them sweet sweet free games I'll probably never play
 
 from os import getenv
 from dotenv import load_dotenv
+
 try:
-    if getenv("IS_DOCKER"):  
-        load_dotenv()
-except Exception:
-    print(".env missing might be a docker container.")
+    load_dotenv()
+except expression:
+    print("might be a docker, no .env file present")
     pass
 
-credentials = [getenv("EPIC_EMAIL"), getenv("EPIC_PASSWORD"), getenv("EPIC_TFA_TOKEN") if len(getenv("EPIC_TFA_TOKEN")) > 0 else None]
-#print(credentials)
+
+# Pull credentials from .env, then transpose the matrix.
+# .env variables should be comma-separated if using multiple users.
+a = [getenv("EPIC_EMAIL").split(","), getenv("EPIC_PASSWORD").split(","), getenv("EPIC_TFA_TOKEN").split(",")]
+credentialslist = [[a[j if len(str(j)) > 0 else None][i if len(str(i)) > 0 else None] for j in range(len(a))] for i in range(len(a[0]))]
 
 # You may desire to replace the user-agent below. You can leave it as is or google 'what is my user agent' and copy that between the single quotes below
 user_agent = getenv("USER_AGENT")
@@ -154,11 +157,8 @@ def try_get_carousel_button():
 def start_firefox_browser(user_agent):
     profile = webdriver.FirefoxProfile()
     profile.set_preference("general.useragent.override", user_agent) # We will use the user-agent to trick the website into thinking we are a real person. This usually subverts most basic security
-    
-    fireFoxOptions = webdriver.FirefoxOptions()
-    if getenv("IS_DOCKER"):   
-        fireFoxOptions.headless = True
-    browser = webdriver.Firefox(firefox_profile=profile, options=fireFoxOptions) # Setup the browser object to use our modified profile
+
+    browser = webdriver.Firefox(profile, service_log_path="/config/geckodriver.log") # Setup the browser object to use our modified profile
     browser.maximize_window()
     return browser
 
@@ -298,8 +298,7 @@ def wait_until_xpath_visible(xstr, wait_duration=10):
     
 def show_exception_and_exit(exc_type, exc_value, tb):
     traceback.print_exception(exc_type, exc_value, tb)
-    if getenv("IS_DOCKER"):  
-        input("Press key to exit.")
+    print("Press key to exit.")
     browser.quit()
     sys.exit(-1)
    
@@ -313,14 +312,14 @@ epic_login_url = "https://www.epicgames.com/id/login/epic"
 epic_logout_url = "https://www.epicgames.com/id/logout"
 
 browser = start_firefox_browser(user_agent)
-log_into_account(*credentials)
-accept_cookies()
-claim_free_games()
 
-log_out()
+for credentials in credentialslist:
+    print(credentials)
+    log_into_account(*credentials)
+    accept_cookies()
+    claim_free_games()
+    if game_claim_errors_count > 0:
+        print("/!\\ Some games failed to be claimed /!\\")
+    log_out()
+
 browser.quit()
-
-if game_claim_errors_count > 0:
-    print("/!\\ Some games failed to be claimed /!\\")
-    if getenv("IS_DOCKER"):  
-        input("Press any key to exit.")

@@ -2,8 +2,14 @@ version: "3"
 services: 
   freegames:
     build: .
+    security_opt:
+      - seccomp:./default.json
+    shm_size: 2gb
+    user: "${UID}:${GID}"
     environment: 
       EPIC_EMAIL:
       EPIC_PASSWORD: 
       EPIC_TFA_TOKEN:
-      USER_AGENT: 'Mozilla/5.0 (X11; Linux x86_64; rv:83.0) Gecko/20100101 Firefox/83.0'
+      USER_AGENT: "Mozilla/5.0 (X11; Linux x86_64; rv:83.0) Gecko/20100101 Firefox/83.0"
+    ports:
+      - "5800:5800"

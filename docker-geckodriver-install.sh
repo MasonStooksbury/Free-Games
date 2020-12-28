@@ -1,7 +1,7 @@
 #!/bin/bash
 # download and install latest geckodriver for linux or mac.
 # required for selenium to drive a firefox browser.
-
+cd /tmp
 install_dir="/usr/local/bin"
 
 # Setup for downloading the latest file
@@ -16,5 +16,3 @@ tar -xzf "geckodriver-${tagName}-linux64.tar.gz"
 rm geckodriver-${tagName}-linux64.tar.gz
 chmod +x geckodriver
 mv geckodriver "$install_dir"
-echo "installed geckodriver binary in $install_dir"
-ls ${install_dir} | grep "geckodriver"
