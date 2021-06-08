@@ -1,4 +1,4 @@
-#! python3
+#!/usr/bin/python3
 # Free_Games.py - A script that Windows Task Scheduler can run to go and get me them sweet sweet free games I'll probably never play
 
 from os import getenv
@@ -11,17 +11,23 @@ a = [getenv("EPIC_EMAIL").split(","), getenv("EPIC_PASSWORD").split(","), getenv
 credentialslist = [[a[j if len(str(j)) > 0 else None][i if len(str(i)) > 0 else None] for j in range(len(a))] for i in range(len(a[0]))]
 
 # You may desire to replace the user-agent below. You can leave it as is or google 'what is my user agent' and copy that between the single quotes below
-user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36"
+user_agent = "Mozilla/5.0 (Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0" # Most common ubuntu server's firefox user agent
 
 import lxml.html, pyotp, re, sys, time, traceback
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver import FirefoxOptions
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from urllib.parse import quote as uriencode
+
+opts = FirefoxOptions()                               #This modification allows running the app without a display on a ubuntu server machine
+opts.add_argument("--headless")
+browser = webdriver.Firefox(firefox_options=opts)
+browser.get('https://google.com')
 
 # Find the xpath of a given soup object.
 # Full credit goes to ergoithz over at:               https://gist.github.com/ergoithz
@@ -305,7 +311,7 @@ epic_store_url = "https://www.epicgames.com/store/en-US"
 epic_login_url = "https://www.epicgames.com/id/login/epic"
 epic_logout_url = "https://www.epicgames.com/id/logout"
 
-browser = start_firefox_browser(user_agent)
+##browser = start_firefox_browser(user_agent) # This need to be comented to make the scrip work
 
 for credentials in credentialslist:
     print(credentials)
