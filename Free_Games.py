@@ -1,4 +1,4 @@
-#! python3
+#!/usr/bin/python3
 # Free_Games.py - A script that Windows Task Scheduler can run to go and get me them sweet sweet free games I'll probably never play
 
 from os import getenv
@@ -22,7 +22,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from urllib.parse import quote as uriencode
-
+from selenium.webdriver.firefox.options import Options
 # Find the xpath of a given soup object.
 # Full credit goes to ergoithz over at:               https://gist.github.com/ergoithz
 # Here is the link to the function on their GitHub:   https://gist.github.com/ergoithz/6cf043e3fdedd1b94fcf
@@ -151,8 +151,9 @@ def try_get_carousel_button():
 def start_firefox_browser(user_agent):
     profile = webdriver.FirefoxProfile()
     profile.set_preference("general.useragent.override", user_agent) # We will use the user-agent to trick the website into thinking we are a real person. This usually subverts most basic security
-
-    browser = webdriver.Firefox(profile) # Setup the browser object to use our modified profile
+    opts = Options()
+    opts.headless = True
+    browser = webdriver.Firefox(profile,options=opts) # Setup the browser object to use our modified profile
     browser.maximize_window()
     return browser
 
