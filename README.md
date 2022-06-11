@@ -48,7 +48,7 @@ Install them manually:
 + [Firefox](https://www.mozilla.org/firefox/new/) - You can technically do all of this with Chrome, but it involves some more setup with selenium and particular drivers and I'm just too lazy. This works perfectly fine.
 + Enter the `EPIC_EMAIL` and `EPIC_PASSWORD` variables in the `.env` file to match your Epic Games Store account. Don't include any quotes here.
 + You may add multiple user accounts using comma separated values, e.g. `EPIC_EMAIL=a@a.com,b@b.com` `EPIC_PASSWORD=pass1,pass2`
-+ While the scipt will technically work without 2FA enabled on your epic account, you will likely see many more captchas. In order to avoid this, follow the steps [here](###Two-factor-authentication) to enable 2FA on your account and configure the script to work with your 2FA secret. 
++ While the scipt will technically work without 2FA enabled on your epic account, you will likely see many more captchas. In order to avoid this, follow the steps [here](#two-factor-authentication) to enable 2FA on your account and configure the script to work with your 2FA secret. 
 + Finally, you may also want to jump into `Free_Games.py` and replace the `user_agent` variable (but you don't have to). There are instructions inside the script on how to do this. 
 
 ### Two-factor authentication
