@@ -5,6 +5,11 @@
 ![](https://img.shields.io/github/license/MasonStooksbury/Free-Games)
 ![](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2FMasonStooksbury%2FFree-Games)
 
+
+# DEPRECATED
+Use the new-and-improved version that uses the Epic Games Desktop application: [Free-Games-V2](https://github.com/MasonStooksbury/Free-Games-V2)
+
+
 Literally just a script that is automatically ran via Windows Task Scheduler or Cron that logs into the Epic Games Store website and grabs the free games for the week. I've tested it on Windows, but there isn't any reason it wouldn't work on Linux as well. Just change the top line from `#! python3` to `#!/usr/bin/python3` and it should be fine. 
 
 Big shout-out to [@ergoithz](https://github.com/ergoithz) and their amazing function that finds the xpath for a given BeautifulSoup object. These updates wouldn't be possible without it! Check out their super-helpful function here: https://gist.github.com/ergoithz/6cf043e3fdedd1b94fcf
